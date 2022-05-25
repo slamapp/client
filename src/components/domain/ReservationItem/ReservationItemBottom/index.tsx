@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
-import { Button, Icon, Text } from "@components/base";
+import { Button, Icon, Spacer, Text } from "@components/base";
 import reservationAPI from "@service/reservationApi";
 import { useAuthContext } from "@contexts/hooks";
 import { UserListItem } from "@components/domain";
@@ -44,20 +44,30 @@ const ReservationItemBottom = ({
 
   return (
     <>
-      <Container>
-        <ParticipantsToggle secondary onClick={handleClick}>
-          <Icon name="users" size="sm" />
-          <Text>{numberOfReservations}</Text>
-        </ParticipantsToggle>
-        {!expired && (
+      {!expired && (
+        <Spacer gap="xxs" type="horizontal">
           <Link
             href={`courts/${courtId}/${startTime.substring(0, 10)}`}
             passHref
           >
-            <Button>예약 확인하기</Button>
+            <Button type="button" size="md" fullWidth={true}>
+              예약 취소하기
+            </Button>
           </Link>
-        )}
-      </Container>
+          <Link
+            href={`courts/${courtId}/${startTime.substring(0, 10)}`}
+            passHref
+          >
+            <Button type="button" size="md" fullWidth={true}>
+              예약 수정하기
+            </Button>
+          </Link>
+        </Spacer>
+      )}
+      <ParticipantsToggle secondary onClick={handleClick}>
+        <Icon name="users" size="sm" />
+        <Text> 함께하는 사용자 보기({numberOfReservations})</Text>
+      </ParticipantsToggle>
       {visible && (
         <ParticipantList>
           {currentUser.userId &&
@@ -93,6 +103,7 @@ const ReservationItemBottom = ({
 const ParticipantsToggle = styled(Button)`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   border: 2px solid ${({ theme }) => theme.colors.gray200};
 `;
@@ -105,11 +116,6 @@ const ParticipantList = styled.div`
   border-radius: ${({ theme }) => theme.borderRadiuses.md};
 
   background-color: ${({ theme }) => theme.colors.gray200};
-`;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
 `;
 
 export default ReservationItemBottom;

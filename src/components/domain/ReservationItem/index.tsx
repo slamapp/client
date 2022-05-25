@@ -36,11 +36,6 @@ const UpcomingReservations = ({
           <CourtItem.Header>{courtName}</CourtItem.Header>
           <CourtItem.Datetime endDatetime={endTime} startDatetime={startTime} />
         </Spacer>
-        <Loudspeaker
-          startTime={startTime}
-          courtId={courtId}
-          reservationId={reservationId}
-        />
       </HeaderContainer>
 
       <Actions gap="xs">
@@ -61,13 +56,20 @@ const UpcomingReservations = ({
           type="findRoad"
         />
       </Actions>
-      <ReservationItemBottom
-        courtId={courtId}
-        startTime={startTime}
-        endTime={endTime}
-        numberOfReservations={numberOfReservations}
-        expired={expired}
-      />
+      <Spacer gap="xxs" type="vertical">
+        <Loudspeaker
+          startTime={startTime}
+          courtId={courtId}
+          reservationId={reservationId}
+        />
+        <ReservationItemBottom
+          courtId={courtId}
+          startTime={startTime}
+          endTime={endTime}
+          numberOfReservations={numberOfReservations}
+          expired={expired}
+        />
+      </Spacer>
     </ReservationItem>
   );
 };
