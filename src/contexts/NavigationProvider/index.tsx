@@ -1,68 +1,54 @@
-import {
-  useCallback,
-  useReducer,
-  ReactNode,
-  useEffect,
-  ReactChild,
-} from "react";
-import { pageType, eventType, navigationType } from "./actionTypes";
+import type { FC } from "react";
+import { useCallback, useReducer, useEffect } from "react";
+import type { ContextProps } from "./context";
 import Context from "./context";
 import { reducer, initialData } from "./reducer";
-import { Events, GetPageType } from "./types";
 
-interface Props {
-  children: ReactNode;
-}
-
-const NavigationProvider = ({ children }: Props) => {
+const NavigationProvider: FC = ({ children }) => {
   const [navigationProps, dispatch] = useReducer(reducer, initialData);
 
-  const setCurrentPage = useCallback((pageType) => {
-    dispatch({ type: pageType });
-  }, []);
-
-  const useMountPage = (getPageType: GetPageType) =>
+  const useMountPage: ContextProps["useMountPage"] = (currentPageType) =>
     useEffect(() => {
-      const currentPage = getPageType(pageType);
-      setCurrentPage(currentPage);
+      dispatch({ type: currentPageType });
 
-      return () => setCurrentPage(pageType.NONE);
+      return () => dispatch({ type: "PAGE_NONE" });
     }, []);
 
-  const setIsTopTransparent = (isTopTransparent: boolean) =>
+  const setIsTopTransparent: ContextProps["setIsTopTransparent"] = (
+    isTopTransparent
+  ) =>
     dispatch({
-      type: navigationType.SET_IS_TOP_TRANSPARENT,
+      type: "NAVIGATION_SET_IS_TOP_TRANSPARENT",
       payload: { isTopTransparent },
     });
 
-  const useDisableTopTransparent = () => {
-    useEffect(() => {
-      setIsTopTransparent(false);
+  const useDisableTopTransparent: ContextProps["useDisableTopTransparent"] =
+    () =>
+      useEffect(() => {
+        setIsTopTransparent(false);
 
-      return () => setIsTopTransparent(true);
-    }, []);
-  };
+        return () => setIsTopTransparent(true);
+      }, []);
 
-  const setNavigationEvent = useCallback(
-    (events: Events = { back: null, customButton: null }) => {
-      dispatch({ type: eventType.BIND, payload: events });
-    },
+  const setNavigationEvent: ContextProps["setNavigationEvent"] = useCallback(
+    (events = { back: null, customButton: null }) =>
+      dispatch({ type: "EVENT_BIND", payload: { events } }),
     []
   );
 
-  const setCustomButtonEvent = useCallback(
-    (title: string, handleClick: any) => {
-      dispatch({
-        type: eventType.BIND_CUSTOM_BUTTON,
-        payload: { title, handleClick },
-      });
-    },
-    []
-  );
+  const setCustomButtonEvent: ContextProps["setCustomButtonEvent"] =
+    useCallback(
+      (title, handleClick) =>
+        dispatch({
+          type: "EVENT_BIND_CUSTOM_BUTTON",
+          payload: { title, handleClick },
+        }),
+      []
+    );
 
-  const useMountCustomButtonEvent = (
-    customButtonName: string,
-    handleClick: (...args: any[]) => void
+  const useMountCustomButtonEvent: ContextProps["useMountCustomButtonEvent"] = (
+    customButtonName,
+    handleClick
   ) =>
     useEffect(() => {
       setCustomButtonEvent(customButtonName, handleClick);
@@ -70,19 +56,22 @@ const NavigationProvider = ({ children }: Props) => {
       return clearNavigationEvent;
     }, []);
 
-  const clearNavigationEvent = useCallback(() => {
-    dispatch({ type: eventType.CLEAR });
-  }, []);
+  const clearNavigationEvent: ContextProps["clearNavigationEvent"] =
+    useCallback(() => {
+      dispatch({ type: "EVENT_CLEAR" });
+    }, []);
 
-  const setNavigationTitle = useCallback((title: ReactChild) => {
-    dispatch({ type: navigationType.SET_NAVIGATION_TITLE, payload: title });
-  }, []);
+  const setNavigationTitle: ContextProps["setNavigationTitle"] = useCallback(
+    (title) => {
+      dispatch({ type: "NAVIGATION_SET_TITLE", payload: { title } });
+    },
+    []
+  );
 
   return (
     <Context.Provider
       value={{
         navigationProps,
-        pageType,
         useMountPage,
         setNavigationTitle,
         setNavigationEvent,

@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 
-import { Spacer, Text } from "@components/base";
+import { Spacer, Text } from "~/components/base";
+import { useReservationContext } from "~/contexts/hooks";
 import * as S from "./style";
 import BottomFixedButton from "../BottomFixedButton";
 import HasBallDecisionModal from "./HasBallDecisionModal";
@@ -15,8 +16,6 @@ interface Props {
   buttonText: string;
   requestDisabled: boolean;
   participantsPerBlock: any[];
-  onSetCurrentInput: (currentInput: string) => void;
-  onChangeHasBall: (hasBall: boolean) => void;
   onSubmit: (hasBall: boolean) => void;
 }
 
@@ -27,23 +26,28 @@ const SelectedRangeContent = ({
   buttonText,
   participantsPerBlock,
   requestDisabled,
-  onSetCurrentInput,
-  onChangeHasBall,
   onSubmit,
 }: Props) => {
+  const { handleChangeHasBall, handleSetCurrentInput } =
+    useReservationContext();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleClickButton = useCallback(() => {
+  const handleModalOpen = useCallback(() => {
     setIsModalOpen(true);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
   }, []);
 
   const handleDecideHasBall = useCallback(
     (hasBall: boolean) => {
       setIsModalOpen(false);
-      onChangeHasBall(hasBall);
+      handleChangeHasBall(hasBall);
       onSubmit(hasBall);
     },
-    [onChangeHasBall, onSubmit]
+    [handleChangeHasBall, onSubmit]
   );
 
   return (
@@ -52,7 +56,7 @@ const SelectedRangeContent = ({
         <Spacer gap="xs" type="vertical">
           <Text>선택한 시간</Text>
           <TimeForm
-            onSetCurrentInput={onSetCurrentInput}
+            onSetCurrentInput={handleSetCurrentInput}
             currentInput={currentInput}
             startTime={startTime}
             endTime={endTime}
@@ -68,7 +72,7 @@ const SelectedRangeContent = ({
         <BottomFixedButton
           type="button"
           disabled={requestDisabled || !endTime}
-          onClick={handleClickButton}
+          onClick={handleModalOpen}
         >
           {!requestDisabled
             ? endTime
@@ -80,7 +84,7 @@ const SelectedRangeContent = ({
 
       <HasBallDecisionModal
         visible={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleModalClose}
         onDecideBall={handleDecideHasBall}
       />
     </>

@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 type Size = "sm" | "md" | "lg";
 
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   size?: Size;
   type?: "button" | "submit";
@@ -18,7 +18,7 @@ interface Props {
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Button: React.FC<Props> = ({
+const Button = ({
   className,
   children,
   fullWidth = false,
@@ -30,7 +30,7 @@ const Button: React.FC<Props> = ({
   size = "md",
   style,
   onClick,
-}) => {
+}: Props) => {
   return (
     <StyledButton
       className={className}

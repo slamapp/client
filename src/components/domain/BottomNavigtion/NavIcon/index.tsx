@@ -1,16 +1,16 @@
-import { Icon } from "@components/base";
-import { FeatherIconNameType } from "@components/base/Icon";
-import { useNavigationContext } from "@contexts/hooks";
-import { PageTypeUnion } from "@contexts/NavigationProvider/actionTypes";
 import Link from "next/link";
+import { Icon } from "~/components/base";
+import type { FeatherIconNameType } from "~/components/base/Icon";
+import { useNavigationContext } from "~/contexts/hooks";
+import type { PageType } from "~/contexts/NavigationProvider/actionTypes";
 
 interface Props {
   href: string;
   iconName: FeatherIconNameType;
-  pageType: PageTypeUnion;
+  pageTypes: PageType[];
 }
 
-const NavIcon = ({ href, iconName, pageType }: Props) => {
+const NavIcon = ({ href, iconName, pageTypes }: Props) => {
   const { navigationProps } = useNavigationContext();
   const { currentPage } = navigationProps;
 
@@ -20,11 +20,48 @@ const NavIcon = ({ href, iconName, pageType }: Props) => {
         <Icon
           name={iconName}
           size={24}
-          color={currentPage === pageType ? "black" : "#cfcfcf"}
+          color={
+            pageTypes.some((item) => item === currentPage) ? "black" : "#cfcfcf"
+          }
         />
       </a>
     </Link>
   );
 };
+
+NavIcon.Favorites = () => (
+  <NavIcon href={"/"} iconName={"star"} pageTypes={["PAGE_FAVORITES"]} />
+);
+NavIcon.Map = () => (
+  <NavIcon href={"/courts"} iconName={"map"} pageTypes={["PAGE_MAP"]} />
+);
+NavIcon.Reservations = () => (
+  <NavIcon
+    href={"/reservations"}
+    iconName={"calendar"}
+    pageTypes={["PAGE_RESERVATIONS"]}
+  />
+);
+NavIcon.Chat = () => (
+  <NavIcon
+    href={"/chat/list"}
+    iconName={"message-circle"}
+    pageTypes={[
+      "PAGE_USER_CHATROOM",
+      "PAGE_COURT_CHATROOM",
+      "PAGE_CHATROOM_LIST",
+    ]}
+  />
+);
+NavIcon.newCourt = () => (
+  <NavIcon
+    href={"/admin/newcourts"}
+    iconName={"check-square"}
+    pageTypes={["PAGE_ADMIN_NEWCOURTS"]}
+  />
+);
+NavIcon.Login = () => (
+  <NavIcon href={"/login"} iconName={"log-in"} pageTypes={["PAGE_LOGIN"]} />
+);
 
 export default NavIcon;

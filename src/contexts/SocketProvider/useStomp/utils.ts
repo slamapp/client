@@ -1,4 +1,4 @@
-import { CompatClient, messageCallbackType } from "@stomp/stompjs";
+import type { CompatClient, messageCallbackType } from "@stomp/stompjs";
 
 type ParsedCallback = (parsedBody: { [x: string]: any }) => void;
 

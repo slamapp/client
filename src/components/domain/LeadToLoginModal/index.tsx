@@ -1,18 +1,12 @@
-import { Button } from "@components/base";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { Button } from "~/components/base";
 import Modal from "../Modal";
 
 interface Props {
   headerContent: ReactNode;
   isOpen: boolean;
-  cancel: {
-    content: ReactNode;
-    handle: (e?: any) => void;
-  };
-  confirm: {
-    content: ReactNode;
-    handle: (e?: any) => void;
-  };
+  cancel: { content: ReactNode; handle: (e?: any) => void };
+  confirm: { content: ReactNode; handle: (e?: any) => void };
 }
 
 const LeadToLoginModal = ({

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import type { FC } from "react";
 
 interface Props {
   level?: 1 | 2 | 3 | 4 | 5 | 6;

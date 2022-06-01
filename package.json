@@ -1,14 +1,17 @@
 {
-  "name": "team_handdam_teamddam_clinet",
+  "name": "slam-client",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "test": "jest",
+    "commit": "cz-customizable",
+    "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint --fix 'src/**'",
     "lint:css": "stylelint 'src/**/*.{ts, tsx}'",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "type": "tsc --noEmit"
   },
   "dependencies": {
     "@egjs/react-flicking": "^4.4.2",
@@ -16,20 +19,24 @@
     "@emotion/styled": "^11.6.0",
     "@stomp/stompjs": "^6.1.2",
     "axios": "^0.24.0",
+    "copy-to-clipboard": "^3.3.1",
     "dayjs": "^1.10.7",
     "feather-icons": "^4.28.0",
     "framer-motion": "^5.3.3",
     "jest": "^27.4.7",
-    "next": "12.0.7",
+    "next": "^12.0.8",
     "react": "17.0.2",
     "react-dom": "^17.0.2",
+    "react-ga4": "^1.4.1",
     "react-lottie": "^1.2.3",
     "react-modal-sheet": "^1.4.1",
     "sockjs-client": "^1.5.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^4.0.0-beta.12",
+    "@commitlint/cli": "^16.2.4",
+    "@commitlint/config-conventional": "^16.2.4",
+    "@netlify/plugin-nextjs": "^4.2.2",
     "@types/feather-icons": "^4.7.0",
     "@types/jest": "^27.4.0",
     "@types/node": "16.11.10",
@@ -40,21 +47,18 @@
     "@types/uuid": "^8.3.3",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
-    "commitlint": "^15.0.0",
-    "commitlint-config-gitmoji": "^2.2.5",
+    "cz-customizable": "^6.3.0",
     "eslint": "<8.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-config-next": "12.0.4",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^4.0.0",
     "husky": ">=6",
     "kakao.maps.d.ts": "^0.1.24",
     "lint-staged": ">=10",
-    "prettier": "^2.5.0",
+    "prettier": "^2.5.1",
     "typescript": "4.5.2"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js}": "eslint --cache --fix",
-    "*.{ts,tsx,js,css,md}": "prettier --write"
   }
 }

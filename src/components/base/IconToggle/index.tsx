@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
-import React, { ChangeEvent } from "react";
-import Icon, { FeatherIconNameType } from "../Icon";
+import type { ChangeEvent } from "react";
+import React from "react";
+import type { FeatherIconNameType } from "../Icon";
+import Icon from "../Icon";
 
 interface Props {
   name?: FeatherIconNameType;
@@ -36,6 +38,8 @@ const StyledIconToggleLabel = styled.label<Required<Pick<Props, "size">>>`
   background-color: ${({ theme }) => theme.colors.white};
   border: 2px solid ${({ theme }) => theme.colors.gray100};
   border-radius: ${({ theme }) => theme.borderRadiuses.lg};
+  min-width: ${({ theme, size }) => theme.buttonHeights[size]};
+  min-height: ${({ theme, size }) => theme.buttonHeights[size]};
   width: ${({ theme, size }) => theme.buttonHeights[size]};
   height: ${({ theme, size }) => theme.buttonHeights[size]};
   cursor: pointer;

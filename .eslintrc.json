@@ -1,30 +1,39 @@
 {
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "next/core-web-vitals",
     "airbnb-base",
+    "airbnb-typescript/base",
+    "plugin:import/typescript",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "prettier"
   ],
+  "parserOptions": {
+    "project": "./tsconfig.json", 
+    "extraFileExtensions": [".css"]
+  },
   "rules": {
+    "prettier/prettier": "error",
     "import/extensions": "off",
     "import/prefer-default-export": "off",
     "no-unsafe-optional-chaining": "off",
-    "no-use-before-define": "off",
     "default-param-last": "off",
     "no-underscore-dangle": "off",
     "no-else-return": "off",
     "arrow-body-style": "off",
-    "@typescript-eslint/no-empty-function": "off",
     "no-nested-ternary": "off",
     "no-param-reassign": "off",
     "class-methods-use-this": "off",
     "consistent-return": "off",
-    "no-shadow": "off",
     "react/display-name": "off",
     "camelcase": "off",
     "curly": ["error", "all"],
-    "newline-before-return": "error"
+    "import/no-import-module-exports": "off",
+    "newline-before-return": "error",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-shadow": "off"
   }
 }

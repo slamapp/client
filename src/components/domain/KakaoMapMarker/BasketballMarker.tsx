@@ -1,5 +1,5 @@
-import { useAuthContext } from "@contexts/hooks";
 import { useCallback, useEffect, useMemo } from "react";
+import { useAuthContext } from "~/contexts/hooks";
 
 interface Props {
   map: kakao.maps.Map;
@@ -19,6 +19,7 @@ const BasketballMarker = ({ map, court, onClick }: Props): JSX.Element => {
       new kakao.maps.Marker({
         position: new kakao.maps.LatLng(0, 0),
         clickable: true,
+        title: court.courtName,
       }),
     []
   );
@@ -70,15 +71,12 @@ const BasketballMarker = ({ map, court, onClick }: Props): JSX.Element => {
       }
 
       const imageSize = new kakao.maps.Size(80, 150);
-      const imageOption = {
-        offset: new kakao.maps.Point(27, 69),
-      };
 
-      const markerImage = new kakao.maps.MarkerImage(
-        imageSrc,
-        imageSize,
-        imageOption
-      );
+      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, {
+        offset: new kakao.maps.Point(35, 35),
+        spriteOrigin: new kakao.maps.Point(5, 90),
+        shape: "circle",
+      });
 
       const markerPosition = new kakao.maps.LatLng(
         court.latitude,

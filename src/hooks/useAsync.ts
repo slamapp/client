@@ -1,12 +1,14 @@
-import { DependencyList, useEffect } from "react";
-import useAsyncFn, { AsyncFn } from "./useAsyncFn";
+import type { DependencyList } from "react";
+import { useEffect } from "react";
+import type { AsyncFn } from "./useAsyncFn";
+import useAsyncFn from "./useAsyncFn";
 
-interface stateProps {
+interface StateProps {
   isLoading: boolean;
   value?: any;
 }
 
-const useAsync = (fn: AsyncFn, deps: DependencyList): stateProps => {
+const useAsync = (fn: AsyncFn, deps: DependencyList): StateProps => {
   const [state, callback] = useAsyncFn(fn, deps);
 
   useEffect(() => {

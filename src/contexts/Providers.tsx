@@ -1,10 +1,12 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   AuthProvider,
   NavigationProvider,
   SocketProvider,
   MapProvider,
+  ReservationProvider,
 } from ".";
+import AnalyticsProvider from "./AnalyticsProvider";
 
 interface Props {
   children: ReactNode;
@@ -15,7 +17,11 @@ const Providers = ({ children }: Props) => {
     <AuthProvider>
       <SocketProvider>
         <NavigationProvider>
-          <MapProvider>{children}</MapProvider>
+          <ReservationProvider>
+            <MapProvider>
+              <AnalyticsProvider>{children}</AnalyticsProvider>
+            </MapProvider>
+          </ReservationProvider>
         </NavigationProvider>
       </SocketProvider>
     </AuthProvider>

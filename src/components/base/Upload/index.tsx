@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { ChangeEvent, DragEvent, ReactNode, useRef, useState } from "react";
+import type { ChangeEvent, DragEvent, ReactNode } from "react";
+import { useState } from "react";
 
 interface Props {
   children?: ReactNode;
@@ -7,6 +8,7 @@ interface Props {
   accept?: any;
   value?: File;
   onChange?: (file: File) => void;
+  onChangeFileSrc?: (fileSrc: string) => void;
   [x: string]: any;
 }
 
@@ -17,15 +19,33 @@ const Upload = ({
   accept,
   value,
   onChange,
+  onChangeFileSrc,
+  inputRef,
   ...props
 }: Props) => {
   const [file, setFile] = useState(value);
   const [dragging, setDragging] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     const changedFile: File = (target.files as FileList)[0];
     setFile(changedFile);
+    getFileSrc(changedFile);
+  };
+
+  const getFileSrc = (fileBlob: File) => {
+    if (fileBlob) {
+      const reader = new FileReader();
+
+      const onFileLoadEnd = () => {
+        reader.removeEventListener("loadend", onFileLoadEnd, false);
+        if (typeof reader.result === "string") {
+          onChangeFileSrc?.(reader.result);
+        }
+      };
+
+      reader.addEventListener("loadend", onFileLoadEnd, false);
+      reader.readAsDataURL(fileBlob);
+    }
   };
 
   const handleChooseFile = () => {
@@ -80,7 +100,7 @@ const Upload = ({
   };
 
   return (
-    <UploadContainer
+    <div
       onClick={handleChooseFile}
       {...props}
       onDrop={handleFileDrop}
@@ -96,16 +116,11 @@ const Upload = ({
         onChange={handleFileChange}
       />
       {typeof children === "function" ? children(file, dragging) : children}
-    </UploadContainer>
+    </div>
   );
 };
 
 export default Upload;
-
-const UploadContainer = styled.div`
-  display: inline-block;
-  cursor: pointer;
-`;
 
 const Input = styled.input`
   display: none;

@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 
-import { Avatar, Text } from "@components/base";
-import { getTimeFromIndex } from "@utils/date";
 import Link from "next/link";
+import { Avatar, Text } from "~/components/base";
+import { getTimeFromIndex } from "~/utils/date";
 import * as S from "./style";
 
 const ParticipantsPerTime: React.FC<{ participantsPerBlock: any[] }> = ({

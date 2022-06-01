@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
+import { DEFAULT_PROFILE_IMAGE_URL } from "~/constants";
 import ImageComponent from "../Image";
 import AvatarGroup from "./AvatarGroup";
-import { AvatarShape } from "./types";
+import type { AvatarShape } from "./types";
 
 export interface Props {
   className?: string;
@@ -26,15 +27,13 @@ const Avatar = ({
   size = 70,
   shape = "round",
   placeholder,
-  alt,
+  alt = "avatar",
   mode = "cover",
   __TYPE = "Avatar",
   isEdit = false,
   ...props
 }: Props) => {
   const [loaded, setLoaded] = useState(false);
-
-  const BASE_PROFILE_IMAGE_URL = "/assets/default_profile.svg";
 
   useEffect(() => {
     const image = new Image();
@@ -48,7 +47,7 @@ const Avatar = ({
         block
         lazy={lazy}
         threshold={threshold}
-        src={src ?? BASE_PROFILE_IMAGE_URL}
+        src={src ?? DEFAULT_PROFILE_IMAGE_URL}
         width={typeof size === "number" ? size : undefined}
         height={typeof size === "number" ? size : undefined}
         placeholder={placeholder}

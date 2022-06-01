@@ -1,42 +1,38 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
+import { withRouteGuard } from "~/hocs";
+import { useAuthContext, useNavigationContext } from "~/contexts/hooks";
+import { reservationApi } from "~/service";
+import { Spacer, Text } from "~/components/base";
+import { NoItemMessage, ReservationItem } from "~/components/domain";
 
-import { useAuthContext, useNavigationContext } from "@contexts/hooks";
-import { reservationApi } from "@service/.";
-import { Spacer, Text } from "@components/base";
-import { NoItemMessage, ReservationItem } from "@components/domain";
-import UtilRoute from "UtilRoute";
-
-const Reservations: NextPage = UtilRoute("private", () => {
+const Reservations: NextPage = () => {
   const { authProps, getMyReservations } = useAuthContext();
   const { reservations: upcomingReservations } = authProps.currentUser;
   const { useMountPage } = useNavigationContext();
-  useMountPage((page) => page.RESERVATIONS);
+  useMountPage("PAGE_RESERVATIONS");
   useEffect(() => {
     getMyReservations();
   }, []);
 
   const ref = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState<"UPCOMING" | "EXPIRED">(
+    "UPCOMING"
+  );
   const [expiredReservations, setExpiredReservations] = useState<any[]>([]);
   const [currentLastId, setCurrentLastId] = useState<any>();
   const [isFetching, setIsFetching] = useState(false);
 
-  const tabClickHandler = (index: number) => {
-    setActiveIndex(index);
-  };
-
-  const expiredHandleClick = useCallback(async () => {
-    setActiveIndex(1);
+  const handleClickExpiredTab = useCallback(async () => {
+    setActiveTab("EXPIRED");
 
     if (currentLastId !== null) {
-      const { contents, lastId } =
-        await reservationApi.getMyExpiredReservations(
-          !currentLastId,
-          currentLastId
-        );
-
+      const { data } = await reservationApi.getMyExpiredReservations(
+        !currentLastId,
+        currentLastId
+      );
+      const { contents, lastId } = data;
       setExpiredReservations((prev) => [...prev, ...contents]);
       setCurrentLastId(lastId);
     }
@@ -44,12 +40,11 @@ const Reservations: NextPage = UtilRoute("private", () => {
 
   const loadMore = useCallback(async () => {
     if (expiredReservations.length !== 0 && currentLastId !== null) {
-      const { contents, lastId } =
-        await reservationApi.getMyExpiredReservations(
-          !currentLastId,
-          currentLastId
-        );
-
+      const { data } = await reservationApi.getMyExpiredReservations(
+        !currentLastId,
+        currentLastId
+      );
+      const { contents, lastId } = data;
       setExpiredReservations((prev) => [...prev, ...contents]);
       setCurrentLastId(lastId);
     }
@@ -76,48 +71,44 @@ const Reservations: NextPage = UtilRoute("private", () => {
     return () => observer.disconnect();
   }, [ref, loadMore]);
 
-  const menuTab = [
-    {
-      tabTitle: (
+  return (
+    <PageContainer>
+      <TabContainer>
         <Text
-          strong={activeIndex === 0}
-          onClick={() => tabClickHandler(0)}
+          strong={activeTab === "UPCOMING"}
+          onClick={() => setActiveTab("UPCOMING")}
           style={{ cursor: "pointer" }}
         >
           다가올 예약
         </Text>
-      ),
-      tabContent:
-        upcomingReservations.length === 0 ? (
-          <NoItemMessage
-            title="다가올 예약이 아직 없어요 🤔"
-            type="reservation"
-            description="농구장에 예약하시고 함께 농구할 사람들을 모으세요"
-            buttonTitle="예약할 농구장 찾기"
-          />
-        ) : (
-          <Spacer gap="md" type="vertical">
-            {upcomingReservations.map((reservation) => (
-              <ReservationItem
-                key={reservation.reservationId}
-                {...reservation}
-              />
-            ))}
-          </Spacer>
-        ),
-    },
-    {
-      tabTitle: (
         <Text
-          strong={activeIndex === 1}
-          onClick={expiredHandleClick}
+          strong={activeTab === "EXPIRED"}
+          onClick={handleClickExpiredTab}
           style={{ cursor: "pointer" }}
         >
           지난 예약
         </Text>
-      ),
-      tabContent:
-        expiredReservations.length === 0 ? (
+      </TabContainer>
+      <TabContentsWrapper>
+        {activeTab === "UPCOMING" ? (
+          upcomingReservations.length === 0 ? (
+            <NoItemMessage
+              title="다가올 예약이 아직 없어요 🤔"
+              type="reservation"
+              description="농구장에 예약하시고 함께 농구할 사람들을 모으세요"
+              buttonTitle="예약할 농구장 찾기"
+            />
+          ) : (
+            <Spacer gap="md" type="vertical">
+              {upcomingReservations.map((reservation) => (
+                <ReservationItem
+                  key={reservation.reservationId}
+                  {...reservation}
+                />
+              ))}
+            </Spacer>
+          )
+        ) : expiredReservations.length === 0 ? (
           <NoItemMessage
             title="지난 예약이 아직 없어요 🤔"
             type="reservation"
@@ -135,25 +126,15 @@ const Reservations: NextPage = UtilRoute("private", () => {
                 />
               ))}
           </Spacer>
-        ),
-    },
-  ];
+        )}
+      </TabContentsWrapper>
 
-  return (
-    <PageContainer>
-      <TabStyle>
-        {menuTab.map((section) => {
-          return section.tabTitle;
-        })}
-      </TabStyle>
-      <TabContentsWrapper>{menuTab[activeIndex].tabContent}</TabContentsWrapper>
-
-      <div ref={ref} style={{ height: 20 }}></div>
+      <div ref={ref} style={{ height: 20 }} />
     </PageContainer>
   );
-});
+};
 
-const TabStyle = styled.div`
+const TabContainer = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -173,4 +154,4 @@ const TabContentsWrapper = styled.div`
   margin-top: 16px;
 `;
 
-export default Reservations;
+export default withRouteGuard("private", Reservations);

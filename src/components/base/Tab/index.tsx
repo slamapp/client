@@ -1,10 +1,9 @@
 import styled from "@emotion/styled";
+import type { ReactElement, ReactNode } from "react";
 import {
   Children,
   cloneElement,
   isValidElement,
-  ReactElement,
-  ReactNode,
   useMemo,
   useState,
 } from "react";

@@ -1,10 +1,10 @@
-import { ChangeEvent } from "react";
-import { Radio } from "@components/base";
-import { ProficiencyKeyUnion, ProficiencyValueUnion } from "@domainTypes/.";
+import type { ChangeEvent } from "react";
+import { Radio } from "~/components/base";
+import type { ProficiencyKey, ProficiencyValue } from "~/enums/proficiencyType";
 
 const proficiencyItems: {
-  value: ProficiencyKeyUnion;
-  text: ProficiencyValueUnion;
+  value: ProficiencyKey;
+  text: ProficiencyValue;
 }[] = [
   {
     value: "BEGINNER",
@@ -21,7 +21,7 @@ const proficiencyItems: {
 ];
 
 interface Props {
-  selectedValue: ProficiencyKeyUnion;
+  selectedValue: ProficiencyKey;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -33,7 +33,7 @@ const ProficiencyPicker: React.FC<Props> = ({ selectedValue, onChange }) => {
           key={value}
           text={text}
           value={value as string}
-          checked={selectedValue === (value as ProficiencyKeyUnion)}
+          checked={selectedValue === value}
         />
       ))}
     </Radio.Group>

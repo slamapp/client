@@ -1,5 +1,4 @@
-import type { APICommon } from "./common";
-import { APICourt } from "./court";
+import type { APICommon, APICourt } from "~/domainTypes/tobe";
 
 export interface APIFavorite extends APICommon {
   court: Pick<APICourt, "id" | "name" | "latitude" | "longitude">;

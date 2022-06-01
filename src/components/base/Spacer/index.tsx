@@ -1,9 +1,9 @@
+import type { CSSProperties } from "react";
 import styled from "@emotion/styled";
-import { CSSProperties } from "react";
+import type { ITheme } from "~/styles/theme";
 
-type Size = "xxs" | "xs" | "sm" | "base" | "md" | "lg" | "xl" | "xxl";
 interface Props {
-  gap: Size | number;
+  gap: keyof ITheme["gaps"] | number;
   type?: "vertical" | "horizontal";
   style?: CSSProperties;
 }

@@ -1,5 +1,6 @@
-import { Avatar, Text } from "@components/base";
 import Link from "next/link";
+import { Avatar, Text } from "~/components/base";
+import { useReservationContext } from "~/contexts/hooks";
 import BottomFixedButton from "../BottomFixedButton";
 import * as S from "./style";
 
@@ -8,8 +9,6 @@ interface Props {
   endTime: string;
   participants: any[];
   availableReservation: boolean;
-  snap?: number;
-  onStartCreate: () => void;
 }
 
 const BlockStatusContent = ({
@@ -17,9 +16,9 @@ const BlockStatusContent = ({
   endTime,
   participants,
   availableReservation,
-  onStartCreate,
-  snap,
 }: Props) => {
+  const { handleStartCreate } = useReservationContext();
+
   return (
     <>
       <S.ModalContent>
@@ -45,7 +44,7 @@ const BlockStatusContent = ({
         </S.ContentWrapper>
       </S.ModalContent>
       {availableReservation && (
-        <BottomFixedButton type="button" onClick={onStartCreate} bottom={0}>
+        <BottomFixedButton type="button" onClick={handleStartCreate} bottom={0}>
           선택한 {startTime}부터 예약하기
         </BottomFixedButton>
       )}

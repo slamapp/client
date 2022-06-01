@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-
-import { useResize } from "@hooks/.";
-import { Image, Spacer, Text } from "@components/base";
-import { useRouter } from "next/router";
-import useIsomorphicLayoutEffect from "@hooks/useIsomorphicLayoutEffect";
-import { getTimezoneIndexFromDate } from "@utils/date";
+import { useResize } from "~/hooks";
+import useIsomorphicLayoutEffect from "~/hooks/useIsomorphicLayoutEffect";
+import { useReservationContext } from "~/contexts/hooks";
+import { Image, Spacer, Text } from "~/components/base";
+import { getTimezoneIndexFromDate } from "~/utils/date";
 import { TimeBlockUnit, ActionTimeBlockUnit, Header } from "./TimeBlockUnits";
 import TimeRangeSelector from "./TimeRangeSelector";
 import * as S from "./style";
@@ -18,26 +17,32 @@ const timeSlotIndexMap: { [key in string]: number } = {
   night: 35,
 };
 
-const TimeTable = ({
-  isToday,
-  timeTable,
-  onClickStatusBlock,
-  onClickReservationMarker,
-  startIndex,
-  endIndex,
-  step,
-  existedReservations,
-  selectedReservationId,
-  onClose,
-}: any) => {
+interface Props {
+  isToday: boolean;
+  timeSlot: string;
+  onModalOpen: () => void;
+  onModalClose: () => void;
+}
+
+const TimeTable = ({ isToday, timeSlot, onModalOpen, onModalClose }: Props) => {
+  const {
+    reservation: {
+      step,
+      timeTable,
+      startIndex,
+      endIndex,
+      existedReservations,
+      selectedReservationId,
+    },
+    handleSelectReservation,
+    handleSetCurrentBlock,
+    handleSetTime,
+  } = useReservationContext();
+
   const currentTimeIndex = useMemo(
     () => (isToday ? getTimezoneIndexFromDate(dayjs()) : null),
     [isToday]
   );
-
-  const {
-    query: { timeSlot },
-  } = useRouter();
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [height, setHeight] = useState(0);
@@ -45,6 +50,28 @@ const TimeTable = ({
   const ref = useResize<HTMLDivElement>((rect) => {
     setHeight(rect.width);
   });
+
+  const handleClickBlock = useCallback(
+    (index) => {
+      onModalOpen();
+      if (step === 1) {
+        handleSetCurrentBlock(index);
+      } else {
+        handleSetTime(index);
+      }
+    },
+    [step, handleSetCurrentBlock, handleSetTime, onModalOpen]
+  );
+
+  const handleClickReservationMarker = useCallback(
+    (reservationId: number) => {
+      if (step === 1) {
+        onModalOpen();
+        handleSelectReservation(reservationId);
+      }
+    },
+    [step, onModalOpen, handleSelectReservation]
+  );
 
   useIsomorphicLayoutEffect(() => {
     if (ref.current) {
@@ -88,7 +115,7 @@ const TimeTable = ({
           height={height}
           previous
           disabled={isToday}
-          onClose={onClose}
+          onClose={onModalClose}
         />
         {timeTable.map((item: any, index: number) => (
           <TimeBlockUnit
@@ -98,11 +125,13 @@ const TimeTable = ({
             reservationCount={item.peopleCount}
             ballCount={item.ballCount}
             hasReservation={item.hasReservation}
-            onClickStatusBlock={onClickStatusBlock}
             selected={startIndex === index}
             step={step}
+            onClick={handleClickBlock}
             disabled={
-              isToday && currentTimeIndex && index < currentTimeIndex + 1
+              isToday &&
+              currentTimeIndex !== null &&
+              index < currentTimeIndex + 1
             }
           />
         ))}
@@ -124,7 +153,7 @@ const TimeTable = ({
                   top={height * (startIndex + 1)}
                   left={height}
                   selected={reservationId === selectedReservationId}
-                  onClick={() => onClickReservationMarker(reservationId)}
+                  onClick={() => handleClickReservationMarker(reservationId)}
                 >
                   <Spacer
                     gap="xxs"
@@ -135,6 +164,7 @@ const TimeTable = ({
                   >
                     <ImageWrapper>
                       <Image
+                        unoptimized
                         src="/assets/basketball/only_ball_500.gif"
                         alt="basketball"
                       />
@@ -148,7 +178,7 @@ const TimeTable = ({
             </>
           )
         )}
-        <ActionTimeBlockUnit height={height} next onClose={onClose} />
+        <ActionTimeBlockUnit height={height} next onClose={onModalClose} />
       </S.TimeTableContainer>
     </div>
   );

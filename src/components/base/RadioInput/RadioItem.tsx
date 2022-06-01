@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { Chip } from "@components/base";
+import { Chip } from "~/components/base";
 
 interface RadioItemProps {
   value: string;

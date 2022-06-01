@@ -1,5 +1,5 @@
-import { Modal } from "@components/base";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { Modal } from "~/components/base";
 import * as S from "./style";
 
 interface Props {

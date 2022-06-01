@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { TimeBlockUnitWrapperProps, StatusProps } from "../type";
+import type { TimeBlockUnitWrapperProps, StatusProps } from "../type";
 
 const TimeTableContainer = styled.div`
   position: relative;

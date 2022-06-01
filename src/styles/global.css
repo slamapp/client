@@ -1,10 +1,7 @@
-@font-face {
-  font-family: "Spoqa Han Sans Neo";
-  src: url("//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css");
-}
-
 body {
-  font-family: "Spoqa Han Sans Neo", "sans-serif";
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
   box-sizing: border-box;
 }
 

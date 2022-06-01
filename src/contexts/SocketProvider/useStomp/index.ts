@@ -1,9 +1,9 @@
-import { useAuthContext } from "@contexts/hooks";
-import { Notification } from "@domainTypes/.";
-import { CompatClient } from "@stomp/stompjs";
+import type { CompatClient } from "@stomp/stompjs";
 import { useCallback, useEffect, useState } from "react";
-import { socketApi } from "service";
-import { SendAuth, UseStomp } from "./type";
+import { socketApi } from "~/service";
+import type { APINotification } from "~/domainTypes/tobe";
+import { useAuthContext } from "~/contexts/hooks";
+import type { SendAuth, UseStomp } from "./type";
 import { subscribe } from "./utils";
 
 const useStomp: UseStomp = (token: string) => {
@@ -30,7 +30,7 @@ const useStomp: UseStomp = (token: string) => {
           setIsLoading(false);
           subscribe(newClient, `/user/${userId}/notification`, (body) => {
             console.log(body);
-            unshiftNotification(body as Notification);
+            unshiftNotification(body as APINotification);
           });
           subscribe(newClient, `/user/${`courtId`}/chat`, (body) => {
             console.log(body);

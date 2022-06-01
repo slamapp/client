@@ -1,21 +1,17 @@
 import React from "react";
-import {
-  Notification,
-  NotificationType,
-  notificationTypes,
-} from "@domainTypes/.";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { LinkStrong, Spacer } from "@components/base";
-import { CourtItem, LinkAvatar } from "@components/domain";
-import "dayjs/locale/ko";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/ko";
+import { LinkStrong, Spacer } from "~/components/base";
+import type { APINotification } from "~/domainTypes/tobe";
+import { CourtItem, ProfileAvatar } from "~/components/domain";
 
 dayjs.extend(relativeTime);
 
 interface Props {
-  notification: Notification;
+  notification: APINotification;
 }
 
 const NotificationItem = ({ notification }: Props) => {
@@ -55,80 +51,72 @@ export default NotificationItem;
 
 const getNotificationMarkUp = ({
   date,
-  notification: { type, loudspeakerInfo, followerInfo },
+  notification,
 }: {
   date: Date;
-  notification: Notification;
+  notification: APINotification;
 }) => {
   const dayFormatted = dayjs(date).format("YYYY-MM-DD");
 
-  switch (type) {
-    case notificationTypes.FOLLOWING:
+  switch (notification.type) {
+    case "FOLLOW": {
+      const { sender } = notification.follow;
+
       return (
         <>
-          <LinkAvatar
-            userId={followerInfo!.userId}
-            imageUrl={followerInfo!.userImage}
+          <ProfileAvatar
+            userId={sender.id}
+            profileImage={sender.profileImage}
+            nickname={sender.nickname}
           />
           <div>
-            <LinkStrong href={`user/${followerInfo!.userId}`}>
-              {followerInfo!.userNickname}
+            <LinkStrong href={`user/${sender.id}`}>
+              {sender.nickname}
             </LinkStrong>
             님이 팔로우 했습니다
           </div>
         </>
       );
-      break;
+    }
+    case "LOUDSPEAKER": {
+      const { court } = notification.loudspeaker;
 
-    case notificationTypes.LOUDSPEAKER:
       return (
         <>
-          {loudspeakerInfo && (
-            <>
-              <CourtItem.KakaoMapLink
-                latitude={loudspeakerInfo.courtInfo.latitude}
-                longitude={loudspeakerInfo.courtInfo.longitude}
-                courtName={loudspeakerInfo.courtInfo.name}
-                type="findRoad"
-              />
-
-              <div>
-                <div>
-                  <LinkStrong
-                    href={`courts/${loudspeakerInfo.courtInfo.id}/${dayFormatted}`}
-                  >
-                    {`${loudspeakerInfo.courtInfo.name} (농구 골대 ${loudspeakerInfo.courtInfo.basketCount} 개)`}
-                  </LinkStrong>
-                  에서 함께 농구할 사람을 급하게 구하고 있습니다
-                </div>
-
-                <div>{loudspeakerInfo.courtInfo.image}</div>
-              </div>
-            </>
-          )}{" "}
+          <CourtItem.KakaoMapLink
+            latitude={court.latitude}
+            longitude={court.longitude}
+            courtName={court.name}
+            type="findRoad"
+          />
+          <div>
+            <div>
+              <LinkStrong href={`courts/${court.id}/${dayFormatted}`}>
+                {`${court.name} (농구 골대 ${court.basketCount} 개)`}
+              </LinkStrong>
+              에서 함께 농구할 사람을 급하게 구하고 있습니다
+            </div>
+            <div>{court.image}</div>
+          </div>
         </>
       );
-      break;
+    }
 
     default:
       break;
   }
 };
 
-const NotificationItemContainer = styled.div<{
-  type: NotificationType;
-}>`
+const NotificationItemContainer = styled.div<{ type: APINotification["type"] }>`
   align-items: center;
   gap: 12px;
   padding: 12px;
   margin-bottom: 12px;
   ${({ theme, type }) => css`
-    background: ${type === notificationTypes.FOLLOWING
+    background: ${type === "FOLLOW"
       ? theme.colors.white
       : theme.colors.activeGradientColor};
-    color: ${type === notificationTypes.FOLLOWING
-      ? theme.colors.gray900
-      : theme.colors.white};
+    color: ${type === "FOLLOW" ? theme.colors.gray900 : theme.colors.white};
     border-radius: ${theme.borderRadiuses.sm};
     box-shadow: ${theme.boxShadows.sm};
   `}

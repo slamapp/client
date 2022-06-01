@@ -1,11 +1,7 @@
-import {
-  ProficiencyKeyUnion,
-  ProficiencyValueUnion,
-  PositionKeyUnion,
-  PositionValueUnion,
-} from "@domainTypes/.";
+import type { PositionKey, PositionValue } from "~/enums/positionType";
+import type { ProficiencyKey, ProficiencyValue } from "~/enums/proficiencyType";
 
-const getKoreanProficiency = (englishProficiency: ProficiencyKeyUnion) => {
+const getKoreanProficiency = (englishProficiency: ProficiencyKey) => {
   switch (englishProficiency) {
     case "BEGINNER":
       return "뉴비";
@@ -18,19 +14,17 @@ const getKoreanProficiency = (englishProficiency: ProficiencyKeyUnion) => {
   }
 };
 
-type TransLatedProficiency = {
-  english: ProficiencyKeyUnion;
-  korean: ProficiencyValueUnion;
-};
-
 export const getTranslatedProficiency = (
-  englishProficiency: ProficiencyKeyUnion
-): TransLatedProficiency => ({
+  englishProficiency: ProficiencyKey
+): {
+  english: ProficiencyKey;
+  korean: ProficiencyValue;
+} => ({
   english: englishProficiency,
   korean: getKoreanProficiency(englishProficiency),
 });
 
-const getKoreanPosition = (englishPosition: PositionKeyUnion) => {
+const getKoreanPosition = (englishPosition: PositionKey) => {
   switch (englishPosition) {
     case "C":
       return "센터";
@@ -47,14 +41,12 @@ const getKoreanPosition = (englishPosition: PositionKeyUnion) => {
   }
 };
 
-type TransLatedPosition = {
-  english: PositionKeyUnion;
-  korean: PositionValueUnion;
-};
-
 export const getTranslatedPositions = (
-  englishPositions: PositionKeyUnion[]
-): TransLatedPosition[] =>
+  englishPositions: PositionKey[]
+): {
+  english: PositionKey;
+  korean: PositionValue;
+}[] =>
   englishPositions.map((english) => ({
     english,
     korean: getKoreanPosition(english),

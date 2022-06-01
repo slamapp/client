@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import { ReactNode, useMemo } from "react";
+import type { ReactNode } from "react";
+import { useMemo } from "react";
 import FluxProvider from "./FluxProvider";
-import { GutterType } from "./types";
+import type { GutterType } from "./types";
 
 const AlignToCSSValue = {
   top: "flex-start",
@@ -9,8 +10,8 @@ const AlignToCSSValue = {
   bottom: "flex-end",
 };
 
-type typeAlign = "top" | "middle" | "bottom";
-type typeJustify =
+type TypeAlign = "top" | "middle" | "bottom";
+type TypeJustify =
   | "start"
   | "center"
   | "space-between"
@@ -19,8 +20,8 @@ type typeJustify =
 
 interface Props {
   children?: ReactNode;
-  justify?: typeJustify;
-  align?: typeAlign;
+  justify?: TypeJustify;
+  align?: TypeAlign;
   gutter?: GutterType;
   [x: string]: any;
 }
@@ -68,8 +69,8 @@ const Row = ({
 export default Row;
 
 interface StyledRowProps {
-  justify?: typeJustify;
-  align?: typeAlign;
+  justify?: TypeJustify;
+  align?: TypeAlign;
 }
 
 const StyledRow = styled.div<StyledRowProps>`

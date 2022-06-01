@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import useIsomorphicLayoutEffect from "@hooks/useIsomorphicLayoutEffect";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactDom from "react-dom";
+import useIsomorphicLayoutEffect from "~/hooks/useIsomorphicLayoutEffect";
 import useClickAway from "../../../hooks/useClickAway";
 
 interface Props {

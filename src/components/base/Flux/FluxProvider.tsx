@@ -1,5 +1,6 @@
-import { createContext, ReactNode, useContext } from "react";
-import { GutterType } from "./types";
+import type { ReactNode } from "react";
+import { createContext, useContext } from "react";
+import type { GutterType } from "./types";
 
 interface ProviderProps {
   children: ReactNode;

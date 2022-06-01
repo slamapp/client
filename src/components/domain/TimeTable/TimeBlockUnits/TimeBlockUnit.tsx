@@ -1,12 +1,13 @@
-import { Text } from "@components/base";
+import { useCallback } from "react";
+import { useReservationContext } from "~/contexts/hooks";
+import { Text } from "~/components/base";
 import {
   MAJOR_TIME_BLOCK_UNIT,
   ACTIVE_RESERVATION_COUNT,
   getTimeFromIndex,
-} from "@utils/date";
+} from "~/utils/date";
 import * as S from "./style";
-import { TimeBlockUnitProps, Status } from "../type";
-
+import type { TimeBlockUnitProps, Status } from "../type";
 import Hour from "./Hour";
 
 const getTimeSlotFromIndex = (index: number) =>
@@ -19,10 +20,13 @@ const TimeBlockUnit: React.FC<TimeBlockUnitProps> = ({
   ballCount,
   selected,
   hasReservation,
-  onClickStatusBlock,
-  step,
   disabled,
+  onClick,
 }) => {
+  const {
+    reservation: { step },
+  } = useReservationContext();
+
   const isEven = index % 2 === 0;
   const hasBlackTopBorder = index % MAJOR_TIME_BLOCK_UNIT === 0;
   const hasBlackBottomBorder =
@@ -48,9 +52,7 @@ const TimeBlockUnit: React.FC<TimeBlockUnitProps> = ({
       <S.StatusColumn
         className="time-block__status"
         status={status}
-        onClick={() => {
-          onClickStatusBlock(index);
-        }}
+        onClick={() => onClick(index)}
       >
         {selected && step === 1 && (
           <S.Selector hasReservation={hasReservation}>

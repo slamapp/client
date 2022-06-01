@@ -1,4 +1,5 @@
-import dayjs, { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 
@@ -45,11 +46,12 @@ export const getTimezoneIndexFromDatetime = (datetime: string) =>
 
 export const getTimezoneDateStringFromDate = (
   date: Dayjs,
-  timezone: Timezone = DEFAULT_TIMEZONE
-) => date.tz(timezone).format("YYYY-MM-DD");
+  timezone: Timezone = DEFAULT_TIMEZONE,
+  format = "YYYY-MM-DD"
+) => date.tz(timezone).format(format);
 
 export const getIsOneHourLeft = (datetime: string) =>
-  dayjs().diff(datetime) <= ONE_HOUR;
+  Math.abs(dayjs().diff(datetime)) <= ONE_HOUR;
 
 export const getTimezoneCurrentDate = (timezone: Timezone = DEFAULT_TIMEZONE) =>
   dayjs().tz(timezone).hour(0).minute(0).second(0).millisecond(0);

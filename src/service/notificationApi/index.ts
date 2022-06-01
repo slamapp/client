@@ -1,5 +1,5 @@
 import { request, authRequest, authFileRequest } from "../fetcher";
-import { NotificationApi } from "./type";
+import type { NotificationApi } from "./type";
 
 const notificationApi: NotificationApi = {
   getNotifications: ({ size = 3, lastId, isFirst = false }) =>

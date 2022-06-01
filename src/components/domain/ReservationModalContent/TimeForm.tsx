@@ -1,6 +1,6 @@
-import { Text } from "@components/base";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Text } from "~/components/base";
 
 import * as S from "./style";
 

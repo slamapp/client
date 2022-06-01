@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, CSSProperties } from "react";
-import type { ReactNode } from "react";
-import { DEFAULT_POSITION } from "@utils/geolocation";
-import { useMapContext } from "@contexts/hooks";
+import React, { useEffect, useRef } from "react";
+import type { ReactNode, CSSProperties } from "react";
 import styled from "@emotion/styled";
-import { Coord } from "@domainTypes/.";
+import { useMapContext } from "~/contexts/hooks";
+import type { Coord } from "~/domainTypes/tobe";
+import { DEFAULT_POSITION } from "~/utils/geolocation";
 import useKakaoMapEvent from "./useKakaoMapEvent";
 import ZoomButton from "./ZoomButton";
 import CurrentLocationButton from "./CurrentLocationButton";
@@ -23,6 +23,7 @@ interface Props {
   children: ReactNode;
   onClick?: (_: kakao.maps.Map, event: kakao.maps.event.MouseEvent) => void;
   onDragEnd?: any;
+  onDragStart?: any;
   onZoomChanged?: any;
 }
 
@@ -33,6 +34,7 @@ const KakaoMap = ({
   zoomable = true,
   onClick,
   onDragEnd,
+  onDragStart,
   onZoomChanged,
   children,
   style,
@@ -81,6 +83,7 @@ const KakaoMap = ({
   }, [handleInitMap]);
 
   useKakaoMapEvent<kakao.maps.Map>(map, "click", onClick);
+  useKakaoMapEvent<kakao.maps.Map>(map, "dragstart", onDragStart);
   useKakaoMapEvent<kakao.maps.Map>(map, "dragend", onDragEnd);
   useKakaoMapEvent<kakao.maps.Map>(map, "zoom_changed", onZoomChanged);
 

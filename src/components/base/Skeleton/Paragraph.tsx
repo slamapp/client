@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import Box from "./Box";
 
 interface Props {
@@ -17,26 +18,31 @@ const Paragraph = ({
   lineBreak = 4,
   ...props
 }: Props) => {
-  // 정갈한 Paragraph 모양을 위한 Step Percentage
-
-  const middleWidthRandomRatio = () => 80 + Math.floor(Math.random() * 20);
-  const lastWidthRandomRatio = () => 20 + Math.floor(Math.random() * 80);
-
   const stepWidth = (ratio: number) =>
     Math.floor(ratio / stepPercentage) * stepPercentage;
+
+  // 정갈한 Paragraph 모양을 위한 Step Percentage
+  const middleLineWidthRandomRatio = useMemo(
+    () => stepWidth(80 + Math.floor(Math.random() * 20)),
+    []
+  );
+  const lastLineWidthRandomRatio = useMemo(
+    () => stepWidth(20 + Math.floor(Math.random() * 80)),
+    []
+  );
 
   return (
     <div {...props} style={{ fontSize, lineHeight }}>
       {Array.from(Array(line), (_, index) =>
         index === line - 1 ? (
           <Box
-            width={`${stepWidth(lastWidthRandomRatio())}%`}
+            width={`${lastLineWidthRandomRatio}%`}
             height={fontSize}
             key={index}
           />
         ) : (index + 1) % lineBreak === 0 ? (
           <Box
-            width={`${stepWidth(middleWidthRandomRatio())}%`}
+            width={`${middleLineWidthRandomRatio}%`}
             height={fontSize}
             key={index}
           />

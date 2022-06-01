@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import type { MouseEvent } from "react";
-import Icon, { FeatherIconNameType } from "../Icon";
+import type { FeatherIconNameType } from "../Icon";
+import Icon from "../Icon";
+import { Share } from "./icons";
 
 interface Props {
   name: FeatherIconNameType;
@@ -9,7 +11,7 @@ interface Props {
   iconSize?: "sm" | "md" | "lg" | number;
   type?: "button" | "submit";
   iconColor?: string;
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e?: MouseEvent<HTMLButtonElement>) => void;
 }
 
 const IconButton = ({
@@ -33,6 +35,8 @@ const IconButton = ({
   );
 };
 
+IconButton.Share = Share;
+
 export default IconButton;
 
 const StyledIconButton = styled.button<Required<Pick<Props, "size">>>`
@@ -43,6 +47,8 @@ const StyledIconButton = styled.button<Required<Pick<Props, "size">>>`
   background-color: ${({ theme }) => theme.colors.white};
   border: 2px solid ${({ theme }) => theme.colors.gray100};
   border-radius: ${({ theme }) => theme.borderRadiuses.lg};
+  min-width: ${({ theme, size }) => theme.buttonHeights[size]};
+  min-height: ${({ theme, size }) => theme.buttonHeights[size]};
   width: ${({ theme, size }) => theme.buttonHeights[size]};
   height: ${({ theme, size }) => theme.buttonHeights[size]};
   cursor: pointer;

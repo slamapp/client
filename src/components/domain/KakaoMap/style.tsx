@@ -1,5 +1,5 @@
-import { IconButton } from "@components/base";
 import styled from "@emotion/styled";
+import { IconButton } from "~/components/base";
 
 const PositionAction = styled.div<{ bottom?: number }>`
   position: absolute;

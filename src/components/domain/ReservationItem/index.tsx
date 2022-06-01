@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Avatar, Spacer } from "@components/base";
+import { Spacer } from "~/components/base";
 import CourtItem from "../CourtItem";
 import Loudspeaker from "./Loudspeaker";
 import ReservationItemBottom from "./ReservationItemBottom";
@@ -17,8 +17,6 @@ interface ReserveList {
   createdAt: Date;
   updatedAt: Date;
 }
-
-type ReserveLists = ReserveList[];
 
 const UpcomingReservations = ({
   reservationId,
@@ -47,8 +45,15 @@ const UpcomingReservations = ({
 
       <Actions gap="xs">
         <CourtItem.FavoritesToggle courtId={courtId} />
-        <CourtItem.ShareButton />
-        <CourtItem.ChatLink courtId={courtId} />
+        <CourtItem.Share
+          court={{ id: courtId, name: courtName, latitude, longitude }}
+        />
+        <CourtItem.ChatLink
+          chatroomId={
+            // TODO: Court에 chatroomId 포함시키기
+            "1"
+          }
+        />
         <CourtItem.KakaoMapLink
           latitude={latitude}
           longitude={longitude}

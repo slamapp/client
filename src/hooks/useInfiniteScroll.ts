@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const useInfiniteScroll = (
   target: RefObject<HTMLElement>,
@@ -30,7 +31,7 @@ const useInfiniteScroll = (
     const el = target.current;
 
     if (el && intersectionObserver) {
-      intersectionObserver.observe(target.current);
+      intersectionObserver.observe(el);
     }
 
     return () => {

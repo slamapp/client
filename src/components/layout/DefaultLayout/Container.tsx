@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { forwardRef, ReactNode, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { forwardRef, useEffect, useState } from "react";
 
 const Container = forwardRef<HTMLDivElement, { children: ReactNode }>(
   ({ children }, ref) => {

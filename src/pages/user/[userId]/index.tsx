@@ -5,50 +5,39 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import userApi from "@service/userApi";
-import UtilRoute from "UtilRoute";
-import { Avatar, Button, Label, Spacer, Chip, Text } from "@components/base";
+import type { AxiosError } from "axios";
+import { withRouteGuard } from "~/hocs";
+import type { APIFavorite, APIUser, APICourt } from "~/domainTypes/tobe";
+import { DEFAULT_PROFILE_IMAGE_URL } from "~/constants";
+import userApi from "~/service/userApi";
 import {
   useNavigationContext,
   useAuthContext,
   useSocketContext,
-} from "@contexts/hooks";
-import {
-  ProfileFavoritesListItem,
-  BasketballLoading,
-} from "@components/domain";
-import { ProficiencyKeyUnion, PositionKeyUnion } from "@domainTypes/.";
+} from "~/contexts/hooks";
+import Custom404 from "~/pages/404";
+import useIsomorphicLayoutEffect from "~/hooks/useIsomorphicLayoutEffect";
 import {
   getTranslatedPositions,
   getTranslatedProficiency,
-} from "@utils/userInfo";
-import Custom404 from "@pages/404";
+} from "~/utils/userInfo";
+import {
+  ProfileFavoritesListItem,
+  BasketballLoading,
+} from "~/components/domain";
+import { Avatar, Button, Label, Spacer, Chip, Text } from "~/components/base";
 
-type ResponseUserProfile = {
-  createdAt: string;
-  updatedAt: string;
-  userId: number;
-  nickname: string;
-  isFollowing: boolean;
+interface ResponseUserProfile
+  extends Pick<
+    APIUser,
+    "nickname" | "description" | "profileImage" | "proficiency" | "positions"
+  > {
+  userId: APIUser["id"];
   followerCount: number;
   followingCount: number;
-  profileImage: string;
-  description: string;
-  proficiency: ProficiencyKeyUnion;
-  positions: PositionKeyUnion[];
-  favoriteCourts: [
-    {
-      courtId: number;
-      courtName: string;
-    },
-    {
-      courtId: number;
-      courtName: string;
-    }
-  ];
-};
+}
 
-const User: NextPage = UtilRoute("private", () => {
+const User: NextPage = () => {
   const {
     navigationProps,
     useMountPage,
@@ -58,25 +47,48 @@ const User: NextPage = UtilRoute("private", () => {
   const { sendFollow, sendFollowCancel } = useSocketContext();
   const { authProps } = useAuthContext();
 
-  const { userId, favorites } = authProps.currentUser;
+  const { userId, favorites: myFavorites } = authProps.currentUser;
 
-  useMountPage((page) => page.USER);
+  useMountPage("PAGE_USER");
   useDisableTopTransparent();
 
   const { query } = useRouter();
   const { userId: stringQueryUserId } = query;
-  const queryUserId = Number(stringQueryUserId);
 
   const [isMe, setIsMe] = useState(false);
   const [pageUserInfo, setPageUserInfo] = useState<ResponseUserProfile | null>(
     null
   );
+  const [pageFavorites, setPageFavorites] = useState<
+    { id: APIFavorite["id"]; court: Pick<APICourt, "id" | "name"> }[]
+  >([]);
+  const [isFollowing, setIsFollowing] = useState(false);
+
   const [isError, setIsError] = useState(false);
 
   const getMyProfile = useCallback(async () => {
     try {
-      const data = await userApi.getMyProfile<ResponseUserProfile>();
-      setPageUserInfo(data);
+      setPageFavorites([
+        ...myFavorites.map(({ favoriteId, courtId, courtName }) => ({
+          id: favoriteId,
+          court: { id: courtId, name: courtName },
+        })),
+      ]);
+
+      const {
+        data: { followerCount, followingCount, user },
+      } = await userApi.getMyProfile();
+
+      setPageUserInfo({
+        description: user.description,
+        followerCount,
+        followingCount,
+        nickname: user.nickname,
+        positions: user.positions,
+        proficiency: user.proficiency,
+        profileImage: user.profileImage,
+        userId: user.id,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -84,18 +96,19 @@ const User: NextPage = UtilRoute("private", () => {
 
   const getOtherProfile = useCallback(async () => {
     try {
-      const data = await userApi.getUserProfile<ResponseUserProfile>(
-        queryUserId
-      );
+      const { data } = await userApi.getUserProfile(`${stringQueryUserId}`);
       setPageUserInfo(data);
-    } catch (error: any) {
+      setIsFollowing(data.isFollowing);
+      // TODO: 즐겨찾기 API수정시 주석 풀고 디버깅 필요!
+      // setPageFavorites([...data.favorites]);
+    } catch (error) {
       console.error(error);
-      const { message } = error.response.data;
+      const { message } = error as AxiosError;
       if (message === "Entity Not Found") {
         setIsError(true);
       }
     }
-  }, [queryUserId]);
+  }, [stringQueryUserId]);
 
   const handleClickFollow = (prevIsFollowing: boolean) => {
     if (pageUserInfo) {
@@ -108,28 +121,30 @@ const User: NextPage = UtilRoute("private", () => {
         prevState
           ? {
               ...prevState,
-              isFollowing: !prevIsFollowing,
               followerCount: prevIsFollowing
                 ? prevState.followerCount - 1
                 : prevState.followerCount + 1,
             }
           : null
       );
+      setIsFollowing((prev) => !prev);
     }
   };
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setNavigationTitle(`${pageUserInfo?.nickname}`);
   }, [pageUserInfo?.nickname, setNavigationTitle]);
 
   useEffect(() => {
-    if (queryUserId === userId) {
-      setIsMe(true);
-      getMyProfile();
-    } else {
-      getOtherProfile();
+    if (stringQueryUserId && userId) {
+      if (stringQueryUserId === userId) {
+        setIsMe(true);
+        getMyProfile();
+      } else {
+        getOtherProfile();
+      }
     }
-  }, [userId, getMyProfile, getOtherProfile, queryUserId]);
+  }, [userId, getMyProfile, getOtherProfile, stringQueryUserId]);
 
   if (pageUserInfo === null) {
     if (isError) {
@@ -147,7 +162,6 @@ const User: NextPage = UtilRoute("private", () => {
     description,
     positions,
     proficiency,
-    isFollowing,
   } = pageUserInfo;
 
   return (
@@ -161,7 +175,10 @@ const User: NextPage = UtilRoute("private", () => {
         isBackgroundTransparent={navigationProps.isTopTransparent}
       >
         <MainInfoArea>
-          <Avatar src={profileImage} shape="circle" />
+          <Avatar
+            src={profileImage ?? DEFAULT_PROFILE_IMAGE_URL}
+            shape="circle"
+          />
           <StatBar>
             <div>
               <Link href={`/user/${userId}/following`}>
@@ -249,10 +266,10 @@ const User: NextPage = UtilRoute("private", () => {
         </div>
         <div>
           <Label>{isMe ? "내가" : `${nickname}님이`} 즐겨찾는 농구장</Label>
-          {favorites.length ? (
-            favorites.map(({ courtId, courtName }) => (
-              <ProfileFavoritesListItem key={courtId} courtId={courtId}>
-                {courtName}
+          {pageFavorites.length ? (
+            pageFavorites.map(({ id, court }) => (
+              <ProfileFavoritesListItem key={court.id} courtId={court.id}>
+                {court.name}
               </ProfileFavoritesListItem>
             ))
           ) : (
@@ -262,9 +279,9 @@ const User: NextPage = UtilRoute("private", () => {
       </AdditionalInfoSpacer>
     </div>
   );
-});
+};
 
-export default User;
+export default withRouteGuard("private", User);
 
 const MainInfoContainer = styled.div<{ isBackgroundTransparent: boolean }>`
   ${({ theme, isBackgroundTransparent }) => css`

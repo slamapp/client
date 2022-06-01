@@ -1,0 +1,14 @@
+export const actionTypes = {
+  SET_TIMETABLE: "SET_TIMETABLE",
+  START_CREATE: "START_CREATE",
+  START_UPDATE: "START_UPDATE",
+  DECREASE_STEP: "DECREASE_STEP",
+  CLICK_BLOCK: "CLICK_BLOCK",
+  SET_HAS_BALL: "SET_HAS_BALL",
+  CLICK_RESERVATION_MARKER: "CLICK_RESERVATION_MARKER",
+  SET_CURRENT_INPUT: "SET_CURRENT_INPUT",
+  SET_TIME_INDEX: "SET_TIME_INDEX",
+};
+
+export type ActionType = typeof actionTypes;
+export type ActionTypeUnion = ActionType[keyof ActionType];

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import styled from "@emotion/styled";
 
 interface Props {
@@ -9,7 +9,6 @@ interface Props {
   dot?: boolean;
   backgroundColor?: string;
   textColor?: string;
-  [x: string]: any;
 }
 
 const Badge = ({
@@ -20,7 +19,6 @@ const Badge = ({
   dot = true,
   backgroundColor,
   textColor,
-  ...props
 }: Props) => {
   const colorStyle = {
     backgroundColor,
@@ -47,7 +45,7 @@ const Badge = ({
   }
 
   return (
-    <BadgeContainer {...props}>
+    <BadgeContainer>
       {children}
       {badge}
     </BadgeContainer>

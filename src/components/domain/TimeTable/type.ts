@@ -17,8 +17,8 @@ interface TimeBlockUnitProps extends Pick<TimeBlockUnitWrapperProps, "height"> {
   selected: boolean;
   step: number;
   hasReservation: boolean;
-  onClickStatusBlock: (index: number) => void;
   disabled?: boolean;
+  onClick: (index: number) => void;
 }
 
 interface ActionTimeBlockUnitProps

@@ -1,5 +1,5 @@
 export const notificationType = {
-  FOLLOWING: "FOLLOWING",
+  FOLLOW: "FOLLOW",
   LOUDSPEAKER: "LOUDSPEAKER",
 } as const;
 

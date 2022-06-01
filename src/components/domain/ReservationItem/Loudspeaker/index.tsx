@@ -1,7 +1,7 @@
-import { Button } from "@components/base";
-import { useSocketContext } from "@contexts/hooks";
-import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
+import styled from "@emotion/styled";
+import { Button } from "~/components/base";
+import { useSocketContext } from "~/contexts/hooks";
 
 const ONE_HOUR_SECONDS = 3600;
 

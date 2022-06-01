@@ -1,19 +1,18 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { Icon, Badge } from "@components/base";
 import { useRouter } from "next/router";
-import { useAuthContext, useNavigationContext } from "@contexts/hooks";
-import { useIntersectionObserver } from "@hooks/.";
-import LinkAvatar from "../LinkAvatar";
+import { Icon, Badge } from "~/components/base";
+import { useAuthContext, useNavigationContext } from "~/contexts/hooks";
+import { useIntersectionObserver } from "~/hooks";
+import { ProfileAvatar } from "~/components/domain";
 
 const TopNavigation = () => {
   const sensorRef = useRef<HTMLDivElement>(null);
 
-  const {
-    authProps: { currentUser },
-  } = useAuthContext();
-  const { userId, profileImageUrl, notifications } = currentUser;
+  const { authProps } = useAuthContext();
+  const { userId, profileImage, notifications, nickname } =
+    authProps.currentUser;
 
   const {
     navigationProps: {
@@ -71,13 +70,11 @@ const TopNavigation = () => {
                 </Link>
               </Badge>
             )}
-            {isProfile && userId && (
-              <LinkAvatar
+            {isProfile && userId && nickname && (
+              <ProfileAvatar
+                nickname={nickname}
+                profileImage={profileImage}
                 userId={userId}
-                imageUrl={
-                  profileImageUrl ||
-                  "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"
-                }
               />
             )}
             {isMenu && (

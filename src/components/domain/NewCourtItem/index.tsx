@@ -1,15 +1,24 @@
-import { MouseEvent, useState } from "react";
+import type { MouseEvent } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { css } from "@emotion/react";
-import { Text, Button } from "@components/base";
-import managementApi from "@service/managementApi";
 import { useRouter } from "next/router";
-
-import type { NewCourt } from "./types";
+import type { APINewCourt } from "~/domainTypes/tobe";
+import { Text, Button } from "~/components/base";
+import managementApi from "~/service/managementApi";
 
 interface Props {
-  data: NewCourt;
+  data: Pick<
+    APINewCourt,
+    | "basketCount"
+    | "createdAt"
+    | "updatedAt"
+    | "longitude"
+    | "latitude"
+    | "texture"
+    | "status"
+    | "image"
+  > & { newCourtId: number; courtName: string };
   state: "READY" | "DONE";
   [x: string]: any;
 }
@@ -22,13 +31,10 @@ const NewCourtItem = ({
 }: Props) => {
   const router = useRouter();
 
-  const handleDeny = async (
-    e: MouseEvent<HTMLButtonElement>,
-    newCourtId: number
-  ) => {
+  const handleDeny = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await managementApi.denyNewCourt(newCourtId);
+      await managementApi.denyNewCourt(data.newCourtId);
       setIsOpenDenyModal(true);
       setTimeout(() => {
         setIsOpenDenyModal(false);
@@ -39,13 +45,10 @@ const NewCourtItem = ({
     }
   };
 
-  const handleAccept = async (
-    e: MouseEvent<HTMLButtonElement>,
-    newCourtId: number
-  ) => {
+  const handleAccept = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await managementApi.acceptNewCourt(newCourtId);
+      await managementApi.acceptNewCourt(data.newCourtId);
       setIsOpenAcceptModal(true);
       setTimeout(() => {
         setIsOpenAcceptModal(false);
@@ -64,14 +67,10 @@ const NewCourtItem = ({
         </CourtName>
         {state === "READY" ? (
           <ButtonContainer>
-            <Button
-              fullWidth
-              tertiary
-              onClick={(e) => handleDeny(e, data.newCourtId)}
-            >
+            <Button fullWidth tertiary onClick={handleDeny}>
               거절하기
             </Button>
-            <Button fullWidth onClick={(e) => handleAccept(e, data.newCourtId)}>
+            <Button fullWidth onClick={handleAccept}>
               승인하기
             </Button>
           </ButtonContainer>

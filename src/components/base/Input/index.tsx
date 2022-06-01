@@ -1,7 +1,8 @@
-import { HTMLAttributes, useState, FocusEvent } from "react";
+import type { HTMLAttributes, FocusEvent, ChangeEvent } from "react";
+import { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { Label, Text } from "@components/base";
+import { Label, Text } from "~/components/base";
 
 interface Props extends HTMLAttributes<HTMLInputElement> {
   label: string;
@@ -13,9 +14,18 @@ interface Props extends HTMLAttributes<HTMLInputElement> {
   min?: number;
   max?: number;
   required?: boolean;
+  onChange?(e: ChangeEvent<HTMLInputElement>): void;
+  autoFocus?: boolean;
 }
 
-const Input = ({ label, isRequired, type, visibleError, ...props }: Props) => {
+const Input = ({
+  label,
+  isRequired,
+  type,
+  visibleError,
+  max,
+  ...props
+}: Props) => {
   const [isFocus, setFocus] = useState(false);
 
   const handleToggle = () => {
@@ -37,6 +47,7 @@ const Input = ({ label, isRequired, type, visibleError, ...props }: Props) => {
         >
           <InputContent
             {...props}
+            maxLength={max}
             type={type}
             onFocus={handleFocus}
             onBlur={handleToggle}

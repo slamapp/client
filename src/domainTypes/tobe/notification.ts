@@ -1,12 +1,24 @@
-import { NotificationType } from "@enums/.";
-import type { APICommon, OmitAt } from "./common";
-import type { APIFollow } from "./follow";
-import type { APILoudspeaker } from "./loudspeaker";
+import type {
+  APICommon,
+  OmitAt,
+  APIFollow,
+  APILoudspeaker,
+} from "~/domainTypes/tobe";
 
-export interface APINotification extends APICommon {
-  type: NotificationType;
-  follow?: OmitAt<APIFollow>;
-  loudspeaker?: OmitAt<APILoudspeaker>;
+export type APINotification =
+  | APINotificationFollow
+  | APINotificationLoudspeaker;
+
+interface APINotificationFollow extends DefaultNotification {
+  type: "FOLLOW";
+  follow: OmitAt<APIFollow>;
+}
+
+interface APINotificationLoudspeaker extends DefaultNotification {
+  type: "LOUDSPEAKER";
+  loudspeaker: OmitAt<APILoudspeaker>;
+}
+interface DefaultNotification extends APICommon {
   isRead: boolean;
   isClicked: boolean;
 }

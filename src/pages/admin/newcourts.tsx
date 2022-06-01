@@ -1,34 +1,49 @@
-import { useNavigationContext } from "@contexts/hooks";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Spacer, Tab } from "@components/base";
 import styled from "@emotion/styled";
-import { NewCourtItem, NewCourt, Modal } from "@components/domain";
-import managementApi from "@service/managementApi";
 
-type Status = "READY" | "DONE";
+import type { APINewCourt } from "~/domainTypes/tobe";
+import managementApi from "~/service/managementApi";
+import { useNavigationContext } from "~/contexts/hooks";
+import { NewCourtItem, Modal } from "~/components/domain";
+import { Spacer, Tab } from "~/components/base";
+
+type OldNewCourt = Pick<
+  APINewCourt,
+  | "basketCount"
+  | "createdAt"
+  | "updatedAt"
+  | "longitude"
+  | "latitude"
+  | "texture"
+  | "status"
+  | "image"
+> & { newCourtId: number; courtName: string };
 
 const NewCourtsPage: NextPage = () => {
   const { useMountPage } = useNavigationContext();
-  useMountPage((page) => page.ADMIN_NEWCOURTS);
+  useMountPage("PAGE_ADMIN_NEWCOURTS");
 
-  const [readyData, setReadyData] = useState<NewCourt[]>([]);
-  const [doneData, setDoneData] = useState<NewCourt[]>([]);
+  const [readyData, setReadyData] = useState<OldNewCourt[]>([]);
+  const [doneData, setDoneData] = useState<OldNewCourt[]>([]);
   const [currentLastId, setCurrentLastId] = useState<number | null>(0);
-  const [activeStatus, setActiveStatus] = useState<Status>("READY");
+  const [activeStatus, setActiveStatus] =
+    useState<OldNewCourt["status"]>("READY");
   const [isFetching, setIsFetching] = useState(false);
   const [isOpenDenyModal, setIsOpenDenyModal] = useState(false);
   const [isOpenAcceptModal, setIsOpenAcceptModal] = useState(false);
 
   const loadMore = useCallback(
-    async (status: Status) => {
+    async (status: OldNewCourt["status"]) => {
       if (readyData.length === 0 || isFetching || currentLastId === null) {
         return;
       }
 
       try {
         setIsFetching(true);
-        const { contents, lastId } = await managementApi.getNewCourts(
+        const {
+          data: { contents, lastId },
+        } = await managementApi.getNewCourts(
           status,
           !currentLastId,
           currentLastId
@@ -49,10 +64,12 @@ const NewCourtsPage: NextPage = () => {
   );
 
   const getNewCourts = useCallback(
-    async (status: Status) => {
+    async (status: OldNewCourt["status"]) => {
       try {
         setIsFetching(true);
-        const { contents, lastId } = await managementApi.getNewCourts(
+        const {
+          data: { contents, lastId },
+        } = await managementApi.getNewCourts(
           status,
           !currentLastId,
           currentLastId
@@ -72,7 +89,7 @@ const NewCourtsPage: NextPage = () => {
     [currentLastId, isFetching, readyData.length]
   );
 
-  const handleClick = (status: Status) => {
+  const handleClick = (status: OldNewCourt["status"]) => {
     if (activeStatus === status) {
       return;
     }

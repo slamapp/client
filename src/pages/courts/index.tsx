@@ -1,50 +1,43 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import dayjs, { Dayjs } from "dayjs";
-
-import { useLocalToken } from "@hooks/domain";
-import { DEFAULT_POSITION, getCurrentLocation } from "@utils/geolocation";
-import { Button, ModalSheet, Spacer, Text } from "@components/base";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { useRouter } from "next/router";
+import { courtApi } from "~/service";
+import type { APICourt, Coord } from "~/domainTypes/tobe";
+import { useLocalToken } from "~/hooks/domain";
+import { DEFAULT_POSITION, getCurrentLocation } from "~/utils/geolocation";
+import {
+  useAuthContext,
+  useMapContext,
+  useNavigationContext,
+} from "~/contexts/hooks";
+import {
+  getTimezoneCurrentDate,
+  getTimezoneDateStringFromDate,
+} from "~/utils/date";
 import {
   DatePicker,
   SlotPicker,
   BasketballMarker,
   Map,
   slotItems,
-  SlotKeyUnion,
   CourtItem,
   LeadToLoginModal,
   BasketballLoading,
-} from "@components/domain";
-import { useMapContext, useNavigationContext } from "@contexts/hooks";
-import { useRouter } from "next/router";
-import { courtApi } from "@service/.";
-import {
-  getTimezoneCurrentDate,
-  getTimezoneDateStringFromDate,
-} from "@utils/date";
-import type { Coord } from "@domainTypes/map";
+} from "~/components/domain";
+import type { SlotKeyUnion } from "~/components/domain";
+import { Button, ModalSheet, Spacer, Text } from "~/components/base";
 
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
-
-// TODO: 노체와 중복되는 타입 공통화해서 중복 줄이기
 interface Geocoder extends kakao.maps.services.Geocoder {
   coord2Address: (
     latitude: number,
     longitude: number,
     callback?: (result: any, status: any) => void
   ) => string;
-  addressSearch: (
-    address: string,
-    callback?: (result: any, status: any) => void
-  ) => void;
 }
 
 const getSlotFromDate = (
@@ -71,17 +64,14 @@ const getSlotFromDate = (
 const Courts: NextPage = () => {
   const router = useRouter();
 
-  const {
-    navigationProps,
-    useMountPage,
-    useDisableTopTransparent,
-    useMountCustomButtonEvent,
-  } = useNavigationContext();
+  const { authProps } = useAuthContext();
 
-  const { isTopTransparent } = navigationProps;
+  const { useMountPage, useDisableTopTransparent, useMountCustomButtonEvent } =
+    useNavigationContext();
+
   const [localToken] = useLocalToken();
 
-  useMountPage((page) => page.MAP);
+  useMountPage("PAGE_MAP");
   useDisableTopTransparent();
 
   const { map } = useMapContext();
@@ -101,7 +91,6 @@ const Courts: NextPage = () => {
   // TODO: API 명세 나올 경우 any 수정해주기
   const [isInitialized, setIsInitialized] = useState(false);
   const [selectedCourt, setSelectedCourt] = useState<any>(null);
-  const [isAddressLoading, setIsAddressLoading] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenLeadToLoginModal, setIsOpenLeadToLoginModal] = useState(false);
@@ -121,11 +110,8 @@ const Courts: NextPage = () => {
     setSelectedCourt(null);
   }, []);
 
-  // TODO: 노체 코드와 동일한 부분 중복 줄이기, hooks로 빼기
   const searchAddrFromCoords = (latitude: number, longitude: number) => {
     const geocoder = new kakao.maps.services.Geocoder();
-
-    setIsAddressLoading(true);
 
     const callback = (result: any, status: any) => {
       if (status === kakao.maps.services.Status.OK) {
@@ -151,8 +137,6 @@ const Courts: NextPage = () => {
           }));
         }
       }
-
-      setIsAddressLoading(false);
     };
 
     (geocoder as Geocoder).coord2Address(longitude, latitude, callback);
@@ -170,7 +154,9 @@ const Courts: NextPage = () => {
       const endLatitude = neLatLng.getLat();
       const endLongitude = neLatLng.getLng();
 
-      const { courts } = await courtApi.getCourtsByCoordsAndDate({
+      const {
+        data: { courts },
+      } = await courtApi.getCourtsByCoordsAndDate({
         date: getTimezoneDateStringFromDate(selectedDate),
         startLatitude,
         startLongitude,
@@ -245,9 +231,9 @@ const Courts: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    const restoreCourts = async (courtId: number) => {
+    const restoreCourts = async (courtId: APICourt["id"]) => {
       try {
-        const court: any = await courtApi.getCourtDetail(
+        const { data: court } = await courtApi.getCourtDetail(
           courtId,
           getTimezoneDateStringFromDate(selectedDate),
           selectedSlot
@@ -271,7 +257,7 @@ const Courts: NextPage = () => {
       const { courtId } = router.query;
 
       if (courtId) {
-        restoreCourts(+courtId);
+        restoreCourts(`${courtId}`);
       } else {
         handleGetCurrentLocation();
       }
@@ -280,7 +266,7 @@ const Courts: NextPage = () => {
 
   useEffect(() => {
     const updateSelectedCourtDetail = async () => {
-      const court: any = await courtApi.getCourtDetail(
+      const { data: court } = await courtApi.getCourtDetail(
         selectedCourt.courtId,
         getTimezoneDateStringFromDate(selectedDate),
         selectedSlot
@@ -296,7 +282,12 @@ const Courts: NextPage = () => {
         updateSelectedCourtDetail();
       }
     }
-  }, [map, fetchCourtsByBoundsAndDatetime, center]);
+  }, [
+    map,
+    fetchCourtsByBoundsAndDatetime,
+    center,
+    authProps.currentUser.favorites,
+  ]);
 
   return (
     <>
@@ -304,7 +295,6 @@ const Courts: NextPage = () => {
         <title>탐색 | Slam - 우리 주변 농구장을 빠르게</title>
       </Head>
       <DatePicker
-        isBackgroundTransparent={isTopTransparent}
         startDate={currentDate}
         selectedDate={selectedDate}
         onClick={handleDateClick}
@@ -313,8 +303,13 @@ const Courts: NextPage = () => {
       <Map.KakaoMap
         level={level}
         center={center}
+        onClick={onClose}
+        onDragStart={onClose}
         onDragEnd={fetchCourtsByBoundsAndDatetime}
-        onZoomChanged={fetchCourtsByBoundsAndDatetime}
+        onZoomChanged={(map: kakao.maps.Map) => {
+          fetchCourtsByBoundsAndDatetime(map);
+          onClose();
+        }}
       >
         <Map.ZoomButton onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} />
         <Map.CurrentLocationButton
@@ -353,8 +348,20 @@ const Courts: NextPage = () => {
             </ReservationCount>
             <Actions gap="xs">
               <CourtItem.FavoritesToggle courtId={selectedCourt.courtId} />
-              <CourtItem.ShareButton />
-              <CourtItem.ChatLink courtId={selectedCourt.courtId} />
+              <CourtItem.Share
+                court={{
+                  id: selectedCourt.courtId,
+                  latitude: selectedCourt.latitude,
+                  longitude: selectedCourt.longitude,
+                  name: selectedCourt.courtName,
+                }}
+              />
+              <CourtItem.ChatLink
+                chatroomId={
+                  // TODO: Court에 chatroomId 포함시키기
+                  "1"
+                }
+              />
               <CourtItem.KakaoMapLink
                 latitude={selectedCourt.latitude}
                 longitude={selectedCourt.longitude}
@@ -374,15 +381,19 @@ const Courts: NextPage = () => {
                   }/${getTimezoneDateStringFromDate(selectedDate)}`}
                   passHref
                 >
-                  <Button style={{ flex: 1 }} size="lg">
-                    예약하기
-                  </Button>
+                  <a style={{ flex: 1, display: "flex" }}>
+                    <Button size="lg" style={{ flex: 1 }}>
+                      예약하기
+                    </Button>
+                  </a>
                 </Link>
               ) : (
                 <Link href={"/login"} passHref>
-                  <Button style={{ flex: 1 }} size="lg">
-                    로그인하고 예약하기
-                  </Button>
+                  <a style={{ flex: 1, display: "flex" }}>
+                    <Button size="lg" style={{ flex: 1 }}>
+                      로그인하고 예약하기
+                    </Button>
+                  </a>
                 </Link>
               )}
             </Actions>

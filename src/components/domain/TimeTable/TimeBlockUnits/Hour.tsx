@@ -1,4 +1,4 @@
-import { HourProps } from "../type";
+import type { HourProps } from "../type";
 
 const Hour: React.FC<HourProps> = ({ hour }) => (
   <div

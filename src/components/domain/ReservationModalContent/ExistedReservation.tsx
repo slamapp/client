@@ -1,7 +1,7 @@
-import { Button, Text } from "@components/base";
 import styled from "@emotion/styled";
 import React, { useCallback, useState } from "react";
-
+import { Button, Text } from "~/components/base";
+import { useReservationContext } from "~/contexts/hooks";
 import { BottomFixedContainer } from "../BottomFixedButton";
 import Modal from "../Modal";
 import ParticipantsPerTime from "./ParticipantsPerTime";
@@ -12,8 +12,6 @@ interface Props {
   timeSlot: string;
   participantsPerBlock: any[];
   reservationId: number;
-  onDeleteReservation: (reservationId: number) => void;
-  onStartUpdate: () => void;
   requestDisabled: boolean;
 }
 
@@ -21,17 +19,19 @@ const ExistedReservationContent = ({
   timeSlot,
   participantsPerBlock,
   reservationId,
-  onDeleteReservation,
-  onStartUpdate,
   requestDisabled,
 }: Props) => {
+  const { handleDeleteReservation, handleStartUpdate } =
+    useReservationContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleClickButton = useCallback(() => {
+  const handleOpenModal = useCallback(() => {
     setIsModalOpen(true);
   }, []);
 
-  const onClose = () => setIsModalOpen(false);
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   return (
     <>
@@ -51,15 +51,10 @@ const ExistedReservationContent = ({
               gap: "10px",
             }}
           >
-            <Button
-              type="button"
-              size="lg"
-              onClick={handleClickButton}
-              secondary
-            >
+            <Button type="button" size="lg" onClick={handleOpenModal} secondary>
               예약 취소하기
             </Button>
-            <Button type="button" size="lg" onClick={onStartUpdate}>
+            <Button type="button" size="lg" onClick={handleStartUpdate}>
               예약 수정하기
             </Button>
           </div>
@@ -70,16 +65,21 @@ const ExistedReservationContent = ({
         )}
       </BottomFixedBackground>
 
-      <Modal visible={isModalOpen} onClose={onClose}>
+      <Modal visible={isModalOpen} onClose={handleCloseModal}>
         <Modal.Header>예약을 취소하시겠습니까?</Modal.Header>
         <Modal.BottomButtonContainer>
-          <Button style={{ flex: 1 }} secondary size="lg" onClick={onClose}>
+          <Button
+            style={{ flex: 1 }}
+            secondary
+            size="lg"
+            onClick={handleCloseModal}
+          >
             아니오
           </Button>
           <Button
             style={{ flex: 1 }}
             size="lg"
-            onClick={() => onDeleteReservation(reservationId)}
+            onClick={() => handleDeleteReservation(reservationId)}
           >
             네
           </Button>

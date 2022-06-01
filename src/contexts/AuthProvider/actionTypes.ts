@@ -1,21 +1,27 @@
-export const authTypes = {
-  SET_CURRENT_USER: "SET_CURRENT_USER",
-  CLEAR_CURRENT_USER: "CLEAR_CURRENT_USER",
-  LOADING_ON: "LOADING_ON",
-  LOADING_OFF: "LOADING_OFF",
-  UPDATE_MY_PROFILE: "UPDATE_MY_PROFILE",
-  DELETE_MY_PROFILE_IMAGE: "DELETE_MY_PROFILE_IMAGE",
-  GET_MY_FAVORITES: "SET_MY_FAVORITES",
-  CREATE_FAVORITE: "CREATE_FAVORITE",
-  DELETE_FAVORITE: "DELETE_FAVORITE",
-  CONCAT_NOTIFICATIONS: "CONCAT_NOTIFICATIONS",
-  UNSHIFT_NOTIFICATION: "UNSHIFT_NOTIFICATION",
-  READ_ALL_NOTIFICATIONS: "READ_ALL_NOTIFICATIONS",
-  SET_MY_RESERVATIONS: "SET_MY_RESERVATIONS",
-  CREATE_RESERVATION: "CREATE_RESERVATION",
-  UPDATE_RESERVATION: "UPDATE_RESERVATION",
-  DELETE_RESERVATION: "DELETE_RESERVATION",
-} as const;
+import type { ActionWithoutPayload, ActionWithPayload } from "~/contexts/type";
+import type { APINotification, APIUser } from "~/domainTypes/tobe";
 
-export type ActionType = typeof authTypes;
-export type ActionTypeUnion = ActionType[keyof ActionType];
+export type ActionUnion =
+  | ActionWithPayload<
+      "SET_CURRENT_USER",
+      { user: APIUser; notifications: APINotification[] }
+    >
+  | ActionWithoutPayload<"CLEAR_CURRENT_USER">
+  | ActionWithoutPayload<"LOADING_ON">
+  | ActionWithoutPayload<"LOADING_OFF">
+  | ActionWithPayload<
+      "UPDATE_MY_PROFILE",
+      Pick<APIUser, "nickname" | "positions" | "proficiency" | "description">
+    >
+  | ActionWithPayload<"SET_MY_PROFILE_IMAGE", Pick<APIUser, "profileImage">>
+  | ActionWithPayload<"GET_MY_FAVORITES", any>
+  | ActionWithPayload<"SET_MY_FAVORITES", any>
+  | ActionWithPayload<"CREATE_FAVORITE", any>
+  | ActionWithPayload<"DELETE_FAVORITE", any>
+  | ActionWithPayload<
+      "CONCAT_NOTIFICATIONS",
+      { notifications: APINotification[]; lastId: any }
+    >
+  | ActionWithPayload<"UNSHIFT_NOTIFICATION", any>
+  | ActionWithoutPayload<"READ_ALL_NOTIFICATIONS">
+  | ActionWithPayload<"SET_MY_RESERVATIONS", any>;

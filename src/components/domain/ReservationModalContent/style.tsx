@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
-
-import { Text } from "@components/base";
 import { css } from "@emotion/react";
+import { Text } from "~/components/base";
 
 export const ModalContent = styled.section`
   display: flex;

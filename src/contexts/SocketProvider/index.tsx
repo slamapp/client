@@ -1,12 +1,8 @@
 import styled from "@emotion/styled";
-import { useLocalToken } from "@hooks/domain";
-import { ReactNode } from "react";
-import {
-  Context,
-  SendFollow,
-  SendFollowCancel,
-  SendLoudSpeaker,
-} from "./context";
+import type { ReactNode } from "react";
+import { useLocalToken } from "~/hooks/domain";
+import type { ContextProps } from "./context";
+import { Context } from "./context";
 import useStomp from "./useStomp";
 
 interface Props {
@@ -14,18 +10,18 @@ interface Props {
 }
 
 const SocketProvider = ({ children }: Props) => {
-  const [token, _] = useLocalToken();
+  const [token] = useLocalToken();
   const { isConnected, isLoading, sendAuth } = useStomp(token);
 
-  const sendFollow: SendFollow = (body) => {
+  const sendFollow: ContextProps["sendFollow"] = (body) => {
     sendAuth(`/follow`, body);
   };
 
-  const sendFollowCancel: SendFollowCancel = (body) => {
+  const sendFollowCancel: ContextProps["sendFollowCancel"] = (body) => {
     sendAuth(`/followcancel`, body);
   };
 
-  const sendLoudSpeaker: SendLoudSpeaker = (body) => {
+  const sendLoudSpeaker: ContextProps["sendLoudSpeaker"] = (body) => {
     sendAuth(`/loudSpeaker`, body);
   };
 

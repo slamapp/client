@@ -1,6 +1,6 @@
-import { useAuthContext } from "@contexts/hooks";
 import styled from "@emotion/styled";
 import React from "react";
+import { useAuthContext } from "~/contexts/hooks";
 import { NoItemMessage } from "..";
 import NotificationItem from "./NotificationItem";
 

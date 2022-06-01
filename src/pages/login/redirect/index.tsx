@@ -1,28 +1,28 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Header, Spinner } from "@components/base";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useLocalToken } from "@hooks/domain";
-import { useAuthContext } from "@contexts/hooks";
+import { useLocalToken } from "~/hooks/domain";
+import { useAuthContext } from "~/contexts/hooks";
+import { Header, Spinner } from "~/components/base";
 
 const RedirectPage = () => {
   const [isNeedReLogin, setIsNeedReLogin] = useState(false);
-  const [_, setToken] = useLocalToken();
-  const { getCurrentUser } = useAuthContext();
+  const [, setToken] = useLocalToken();
+  const { authProviderInit } = useAuthContext();
   const router = useRouter();
   const { token } = router.query;
 
   const getCurrentUserData = useCallback(async () => {
     setToken(token);
     try {
-      await getCurrentUser();
+      await authProviderInit();
       router.replace("/");
     } catch (error) {
       console.error(error);
       setIsNeedReLogin(true);
     }
-  }, [token, getCurrentUser, setToken]);
+  }, [token, authProviderInit, setToken]);
 
   useEffect(() => {
     if (token) {

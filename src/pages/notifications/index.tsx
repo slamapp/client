@@ -1,19 +1,19 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import React, { useRef, useEffect, useMemo } from "react";
-import UtilRoute from "UtilRoute";
-import { useAuthContext, useNavigationContext } from "@contexts/hooks";
 import styled from "@emotion/styled";
-import NotificationList from "@components/domain/NotificationList";
-import { useIntersectionObserver } from "@hooks/.";
-import { Skeleton } from "@components/base";
-import { NoItemMessage } from "@components/domain";
+import { withRouteGuard } from "~/hocs";
+import { useIntersectionObserver } from "~/hooks";
+import { useAuthContext, useNavigationContext } from "~/contexts/hooks";
+import NotificationList from "~/components/domain/NotificationList";
+import { Skeleton } from "~/components/base";
+import { NoItemMessage } from "~/components/domain";
 
-const NotificationsPage: NextPage = UtilRoute("private", () => {
+const NotificationsPage: NextPage = () => {
   const { authProps, getMoreNotifications, readAllNotifications } =
     useAuthContext();
   const { notificationLastId, notifications } = authProps.currentUser;
   const { useMountPage } = useNavigationContext();
-  useMountPage((page) => page.NOTIFICATIONS);
+  useMountPage("PAGE_NOTIFICATIONS");
 
   const ref = useRef<HTMLDivElement>(null);
   const entry = useIntersectionObserver(ref, {});
@@ -58,9 +58,9 @@ const NotificationsPage: NextPage = UtilRoute("private", () => {
       </div>
     </PageConainer>
   );
-});
+};
 
-export default NotificationsPage;
+export default withRouteGuard("private", NotificationsPage);
 
 const PageConainer = styled.div`
   flex: 1;

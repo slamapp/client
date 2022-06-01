@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { ReactNode } from "react";
-import { UrlObject } from "url";
+import type { ReactNode } from "react";
+import type { UrlObject } from "url";
 
 interface Props {
   href: string | UrlObject;

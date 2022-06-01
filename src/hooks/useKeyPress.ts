@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState } from "react";
-import { EventKeyValue } from "./EventKeyValueType";
+import type { EventKeyValue } from "./EventKeyValueType";
 
 const useKeyPress = (targetKey: EventKeyValue) => {
   const [keyPressed, setKeyPressed] = useState<boolean>(false);

@@ -1,48 +1,34 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 
 export type Error<T> = { [P in keyof T]?: string };
 
-interface UseFormArgs<T> {
+interface Options<T> {
   initialValues: T;
-  onSubmit: (values: T) => void;
-  validate: (values: T) => Error<T>;
-  confirmModal?: {
-    isOpenConfirmModal: boolean;
-    setIsOpenConfirmModal: (onOff: boolean) => void;
-  };
+  onSubmit(values: T): void;
+  validate(values: T): Error<T>;
 }
 
 const useForm = <T, H extends HTMLElement = HTMLFormElement>({
   initialValues,
   onSubmit,
   validate,
-  confirmModal,
-}: UseFormArgs<T>) => {
+}: Options<T>) => {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Error<T>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setValues({ ...values, [name]: value });
-  };
+  useEffect(() => {
+    const newError = validate(values);
+    setErrors(newError);
+  }, [values]);
 
   const handleSubmit = async (e: FormEvent<H>) => {
     setIsLoading(true);
     e.preventDefault();
     const newErrors = validate ? validate(values) : {};
     if (Object.keys(newErrors).length === 0) {
-      if (!confirmModal) {
-        await onSubmit(values);
-
-        return;
-      }
-
-      if (confirmModal.isOpenConfirmModal) {
-        await onSubmit(values);
-      } else {
-        confirmModal.setIsOpenConfirmModal(true);
-      }
+      await onSubmit(values);
     }
     setErrors(newErrors);
     setIsLoading(false);
@@ -52,7 +38,7 @@ const useForm = <T, H extends HTMLElement = HTMLFormElement>({
     values,
     errors,
     isLoading,
-    handleChange,
+    setValues,
     handleSubmit,
   };
 };

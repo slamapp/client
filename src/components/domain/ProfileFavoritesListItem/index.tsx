@@ -1,13 +1,14 @@
-import React, { HTMLAttributes } from "react";
+import React from "react";
+import type { ReactNode, HTMLAttributes } from "react";
 import styled from "@emotion/styled";
-import type { ReactNode } from "react";
-import { Icon, Button, Spacer, Text } from "@components/base";
 import Link from "next/link";
+import { Icon, Button, Spacer, Text } from "~/components/base";
+import type { APIFavorite } from "~/domainTypes/tobe";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   className?: string;
-  courtId: number;
+  courtId: APIFavorite["court"]["id"];
 }
 
 const ProfileFavoritesListItem: React.FC<Props> = ({

@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
 import Flicking from "@egjs/react-flicking";
 import styled from "@emotion/styled";
-import { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import { useNavigationContext } from "~/contexts/hooks";
 import DateItem from "./DateItem";
 
 const DAY_RANGE = 14;
@@ -10,15 +11,11 @@ interface Props {
   onClick: (date: Dayjs) => void;
   selectedDate: Dayjs;
   startDate: Dayjs;
-  isBackgroundTransparent: boolean;
 }
 
-const DatePicker: React.FC<Props> = ({
-  isBackgroundTransparent,
-  startDate,
-  onClick,
-  selectedDate,
-}) => {
+const DatePicker: React.FC<Props> = ({ startDate, onClick, selectedDate }) => {
+  const { navigationProps } = useNavigationContext();
+
   const twoWeekDates = useMemo(
     () =>
       Array.from({ length: DAY_RANGE }, (_, index) =>
@@ -30,7 +27,7 @@ const DatePicker: React.FC<Props> = ({
   return (
     <StyledFlicking
       style={{
-        backgroundColor: isBackgroundTransparent
+        backgroundColor: navigationProps.isTopTransparent
           ? "rgba(255,255,255,0)"
           : "rgba(255,255,255,1)",
       }}

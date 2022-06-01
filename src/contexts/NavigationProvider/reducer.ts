@@ -1,23 +1,16 @@
-import { Reducer } from "react";
-
-import {
-  ActionTypeUnion,
-  navigationType,
-  pageType,
-  PageTypeUnion,
-  eventType,
-} from "./actionTypes";
+import type { ReactNode, Reducer } from "react";
+import type { Action, PageType } from "./actionTypes";
 
 export interface DataProps {
   isTopTransparent: boolean;
   isTopNavigation: boolean;
   isBottomNavigation: boolean;
-  currentPage: PageTypeUnion;
+  currentPage: PageType;
   isBack: boolean;
   isNotifications: boolean;
   isProfile: boolean;
   isMenu: boolean;
-  title: string;
+  title: ReactNode;
   handleClickBack: null | (() => void);
   customButton: null | {
     title: string;
@@ -25,36 +18,28 @@ export interface DataProps {
   };
 }
 
-export const initialData = {
+export const initialData: DataProps = {
   isTopTransparent: true,
   isTopNavigation: true,
   isBottomNavigation: true,
-  currentPage: pageType.NONE,
+  currentPage: "PAGE_NONE",
   isBack: true,
   isNotifications: true,
   isProfile: true,
   isMenu: false,
-  title: "커스텀",
+  title: "",
   handleClickBack: null,
   customButton: null,
 };
 
-export type ReducerAction = {
-  type: ActionTypeUnion;
-  payload?: any;
-};
-
-export const reducer: Reducer<DataProps, ReducerAction> = (
-  prevState,
-  { type, payload }
-) => {
-  switch (type) {
-    case pageType.NONE: {
+export const reducer: Reducer<DataProps, Action> = (prevState, action) => {
+  switch (action.type) {
+    case "PAGE_NONE": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: false,
         isNotifications: true,
         isProfile: true,
@@ -62,12 +47,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "",
       };
     }
-    case pageType.FAVORITES: {
+    case "PAGE_FAVORITES": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: false,
         isNotifications: true,
         isProfile: true,
@@ -75,12 +60,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "즐겨찾는 농구장",
       };
     }
-    case pageType.NOTIFICATIONS: {
+    case "PAGE_NOTIFICATIONS": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: false,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: false,
         isProfile: false,
@@ -88,12 +73,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "알림",
       };
     }
-    case pageType.MAP: {
+    case "PAGE_MAP": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: false,
         isNotifications: false,
         isProfile: false,
@@ -101,12 +86,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "농구장 찾기",
       };
     }
-    case pageType.COURT_RESERVATIONS: {
+    case "PAGE_COURT_RESERVATIONS": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: false,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: false,
         isProfile: false,
@@ -114,12 +99,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "년월일 넣기",
       };
     }
-    case pageType.RESERVATIONS: {
+    case "PAGE_RESERVATIONS": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: false,
         isNotifications: true,
         isProfile: true,
@@ -127,12 +112,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "예약 목록",
       };
     }
-    case pageType.ACTIVITY: {
+    case "PAGE_ACTIVITY": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: false,
         isNotifications: true,
         isProfile: true,
@@ -140,12 +125,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "활동",
       };
     }
-    case pageType.LOGIN: {
+    case "PAGE_LOGIN": {
       return {
         ...prevState,
         isTopNavigation: false,
         isBottomNavigation: false,
-        currentPage: type,
+        currentPage: action.type,
         isBack: false,
         isNotifications: false,
         isProfile: false,
@@ -153,12 +138,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "로그인",
       };
     }
-    case pageType.COURT_CREATE: {
+    case "PAGE_COURT_CREATE": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: false,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: true,
         isProfile: true,
@@ -166,12 +151,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "새 농구장 추가",
       };
     }
-    case pageType.USER: {
+    case "PAGE_USER": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: false,
         isProfile: false,
@@ -179,12 +164,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "",
       };
     }
-    case pageType.USER_EDIT: {
+    case "PAGE_USER_EDIT": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: false,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: false,
         isProfile: false,
@@ -193,12 +178,26 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "프로필 편집",
       };
     }
-    case pageType.ADMIN_NEWCOURTS: {
+    case "PAGE_CHATROOM_LIST": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
+        isBack: false,
+        isNotifications: true,
+        isProfile: true,
+        isNext: false,
+        isMenu: false,
+        title: "채팅방 목록",
+      };
+    }
+    case "PAGE_ADMIN_NEWCOURTS": {
+      return {
+        ...prevState,
+        isTopNavigation: true,
+        isBottomNavigation: true,
+        currentPage: action.type,
         isBack: true,
         isNotifications: false,
         isProfile: false,
@@ -207,12 +206,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "새 농구장 리스트",
       };
     }
-    case pageType.USER_MENU: {
+    case "PAGE_USER_MENU": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: false,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: false,
         isProfile: false,
@@ -220,12 +219,12 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "사용자 메뉴",
       };
     }
-    case pageType.ERROR: {
+    case "PAGE_ERROR": {
       return {
         ...prevState,
         isTopNavigation: true,
         isBottomNavigation: true,
-        currentPage: type,
+        currentPage: action.type,
         isBack: true,
         isNotifications: true,
         isProfile: true,
@@ -233,32 +232,43 @@ export const reducer: Reducer<DataProps, ReducerAction> = (
         title: "",
       };
     }
-    case navigationType.SET_IS_TOP_TRANSPARENT: {
-      return { ...prevState, isTopTransparent: payload.isTopTransparent };
-    }
-    case navigationType.SET_NAVIGATION_TITLE: {
+    case "NAVIGATION_SET_IS_TOP_TRANSPARENT": {
+      const { isTopTransparent } = action.payload;
+
       return {
         ...prevState,
-        title: payload,
+        isTopTransparent,
       };
     }
-    case eventType.BIND: {
+    case "NAVIGATION_SET_TITLE": {
+      const { title } = action.payload;
+
       return {
         ...prevState,
-        back: payload.back,
-        customButton: payload.customButton,
+        title,
       };
     }
-    case eventType.BIND_CUSTOM_BUTTON: {
+    case "EVENT_BIND": {
+      const { back, customButton } = action.payload.events;
+
+      return {
+        ...prevState,
+        back,
+        customButton,
+      };
+    }
+    case "EVENT_BIND_CUSTOM_BUTTON": {
+      const { title, handleClick } = action.payload;
+
       return {
         ...prevState,
         customButton: {
-          title: payload.title,
-          handleClick: payload.handleClick,
+          title,
+          handleClick,
         },
       };
     }
-    case eventType.CLEAR: {
+    case "EVENT_CLEAR": {
       return {
         ...prevState,
         handleClickBack: null,

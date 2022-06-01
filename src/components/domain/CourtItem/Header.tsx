@@ -1,4 +1,4 @@
-import { Icon, Spacer, Text } from "@components/base";
+import { Icon, Spacer, Text } from "~/components/base";
 
 const Header: React.FC = ({ children }) => {
   return (

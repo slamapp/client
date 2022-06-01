@@ -1,11 +1,6 @@
 import styled from "@emotion/styled";
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  ReactElement,
-  ReactNode,
-} from "react";
+import type { ReactElement, ReactNode } from "react";
+import { Children, cloneElement, isValidElement } from "react";
 import BreadcrumbItem from "./BreadcrumbItem";
 
 interface Props {

@@ -1,4 +1,4 @@
-import { Text } from "@components/base";
+import { Text } from "~/components/base";
 import * as S from "./style";
 
 const SelectedTime: React.FC<{ timeSlot: string }> = ({ timeSlot }) => {

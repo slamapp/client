@@ -1,5 +1,6 @@
-import React, { ReactElement, ReactNode } from "react";
-import { AvatarShape } from "./types";
+import type { ReactElement, ReactNode } from "react";
+import React from "react";
+import type { AvatarShape } from "./types";
 
 interface Props {
   children: ReactNode;

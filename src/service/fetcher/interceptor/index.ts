@@ -1,5 +1,6 @@
-import { AxiosInstance } from "axios";
-import { requestTypes, RequestTypeUnion } from "../type";
+import type { AxiosInstance } from "axios";
+import type { RequestTypeUnion } from "../type";
+import { requestTypes } from "../type";
 import { req, res } from "./getConfig";
 
 export const setInterceptors = (

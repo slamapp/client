@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react";
+import type { FC, ReactNode } from "react";
 import styled from "@emotion/styled";
 import LoaderBasketball from "./LoaderBasketball";
 

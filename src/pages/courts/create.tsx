@@ -4,94 +4,74 @@ import Head from "next/head";
 import Sheet from "react-modal-sheet";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
-
-import UtilRoute from "UtilRoute";
-import { Input, Text, Button, Label, Icon, Spacer } from "@components/base";
+import type { APICourt, APINewCourt, Coord } from "~/domainTypes/tobe";
+import { withRouteGuard } from "~/hocs";
+import { courtApi } from "~/service";
+import { useForm } from "~/hooks";
+import { useMapContext, useNavigationContext } from "~/contexts/hooks";
+import { getCurrentLocation } from "~/utils/geolocation";
 import {
   Map,
   GeneralMarker,
   BottomFixedButton,
-  ValidationNoticeBar,
   LeadToLoginModal,
   BasketballLoading,
-} from "@components/domain";
-import { useForm, Error } from "@hooks/.";
-import { getCurrentLocation } from "@utils/geolocation";
-import { useMapContext, useNavigationContext } from "@contexts/hooks";
-import { courtApi } from "@service/.";
-import { Coord } from "@domainTypes/.";
-
-interface Values {
-  longitude?: number;
-  latitude?: number;
-  image: string | null;
-  texture: string | null;
-  basketCount: number;
-  name: string;
-}
+} from "~/components/domain";
+import { Input, Text, Button, Label, Icon, Spacer } from "~/components/base";
 
 interface Geocoder extends kakao.maps.services.Geocoder {
   coord2Address: (
-    latitude: number,
-    longitude: number,
-    callback?: (result: any, status: any) => void
+    latitude: APICourt["latitude"],
+    longitude: APICourt["longitude"],
+    callback?: (result: any, status: kakao.maps.services.Status) => void
   ) => string;
-  addressSearch: (
-    address: string,
-    callback?: (result: any, status: any) => void
-  ) => void;
 }
 
-const CreateCourt: NextPage = UtilRoute("private", () => {
+const CreateCourt: NextPage = () => {
   const { map } = useMapContext();
 
   const router = useRouter();
 
   const { useMountPage } = useNavigationContext();
-  useMountPage((page) => page.COURT_CREATE);
+  useMountPage("PAGE_COURT_CREATE");
 
   const [isOpen, setOpen] = useState(false);
-  const [isAddressLoading, setIsAddressLoading] = useState<boolean>(false);
-  const [level, setLevel] = useState<number>(3);
+  const [level, setLevel] = useState(3);
   const [center, setCenter] = useState<Coord>();
   const [position, setPosition] = useState<Coord>();
-  const [savedPosition, setSavedPosition] = useState<Coord>();
   const [address, setAddress] = useState<string>();
   const [validatedBasketCount, setValidatedBasketCount] = useState(1);
-  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false);
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
 
   const searchAddrFromCoords = ([latitude, longitude]: Coord) => {
     const geocoder = new kakao.maps.services.Geocoder();
 
-    setIsAddressLoading(true);
-    const callback = (result: any, status: any) => {
-      if (status === kakao.maps.services.Status.OK) {
-        // 도로명 주소
-        if (result[0].road_address) {
-          setAddress(result[0].road_address.address_name);
-        }
-        // 법정 주소
-        else if (result[0].address.address_name) {
-          setAddress(result[0].address.address_name);
-        }
-        // 주소가 없는 경우
-        else {
-          setAddress("주소가 존재하지 않습니다.");
+    (geocoder as Geocoder).coord2Address(
+      longitude,
+      latitude,
+      (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          // 도로명 주소
+          if (result[0].road_address) {
+            setAddress(result[0].road_address.address_name);
+          }
+          // 법정 주소
+          else if (result[0].address.address_name) {
+            setAddress(result[0].address.address_name);
+          }
+          // 주소가 없는 경우
+          else {
+            setAddress("주소가 존재하지 않습니다.");
+          }
         }
       }
-
-      setIsAddressLoading(false);
-    };
-
-    (geocoder as Geocoder).coord2Address(longitude, latitude, callback);
+    );
   };
 
-  const onClick = (
+  const handleClickKakaoMap = (
     _: kakao.maps.Map,
-    mouseEvent: kakao.maps.event.MouseEvent
+    { latLng }: kakao.maps.event.MouseEvent
   ) => {
-    const { latLng } = mouseEvent;
-
     if (latLng) {
       setPosition([latLng.getLat(), latLng.getLng()]);
       searchAddrFromCoords([latLng.getLat(), latLng.getLng()]);
@@ -112,66 +92,58 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
     setLevel((level) => level + 1);
   }, []);
 
-  const savedLocation = () => {
+  const handleClickSaveLocationButton = () => {
     setOpen(false);
-    setSavedPosition(position);
-    setCenter(position);
+    if (position) {
+      const [latitude, longitude] = position;
+      setValues((prev) => ({ ...prev, latitude, longitude }));
+      setCenter(position);
+    }
   };
 
   useEffect(() => {
     handleGetCurrentLocation();
   }, [handleGetCurrentLocation]);
 
-  const { values, errors, isLoading, handleChange, handleSubmit } =
-    useForm<Values>({
-      initialValues: {
-        image: null,
-        texture: null,
-        basketCount: 1,
-        name: "",
-      },
-      onSubmit: async (values) => {
-        if (position) {
-          const [longitude, latitude] = position;
-          const valuesWithPosition = {
-            longitude,
-            latitude,
-            name: values.name,
-            basketCount: values.basketCount,
-            texture: values.texture,
-            image: values.image,
-          };
+  const { values, errors, isLoading, setValues, handleSubmit } = useForm<
+    Pick<
+      APINewCourt,
+      "longitude" | "latitude" | "image" | "texture" | "basketCount" | "name"
+    >
+  >({
+    initialValues: {
+      longitude: 0,
+      latitude: 0,
+      image: null,
+      texture: "ETC",
+      basketCount: 1,
+      name: "",
+    },
+    onSubmit: async (values) => {
+      try {
+        await courtApi.createNewCourt(values);
+        router.push("/courts");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    validate: (values) => {
+      const errors: { [key in keyof typeof values]?: string } = {};
+      const { basketCount, name, longitude, latitude } = values;
 
-          setIsOpenConfirmModal(true);
+      if (!name) {
+        errors.name = "농구장 이름을 입력해주세요.";
+      }
+      if (basketCount < 1) {
+        errors.basketCount = "골대 개수를 입력해주세요.";
+      }
+      if (!longitude || !latitude) {
+        errors.longitude = "위치를 지정해주세요.";
+      }
 
-          try {
-            await courtApi.createNewCourt(valuesWithPosition);
-            router.push("/courts");
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      },
-      validate: ({ basketCount, name }) => {
-        const errors: Error<Values> = {};
-
-        if (!name) {
-          errors.name = "농구장 이름을 입력해주세요.";
-        }
-        if (basketCount < 1) {
-          errors.basketCount = "골대 개수를 입력해주세요.";
-        }
-        if (!savedPosition) {
-          errors.longitude = "위치를 지정해주세요.";
-        }
-
-        return errors;
-      },
-      confirmModal: {
-        isOpenConfirmModal,
-        setIsOpenConfirmModal,
-      },
-    });
+      return errors;
+    },
+  });
 
   useEffect(() => {
     if (values.basketCount > 99) {
@@ -214,7 +186,7 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
                 center={center!}
                 draggable={true}
                 zoomable={true}
-                onClick={onClick}
+                onClick={handleClickKakaoMap}
               >
                 <Map.ZoomButton
                   onZoomIn={handleZoomIn}
@@ -233,7 +205,7 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
             <BottomFixedButton
               type="button"
               disabled={!center}
-              onClick={savedLocation}
+              onClick={handleClickSaveLocationButton}
               containerStyle={{ zIndex: 10000000 }}
             >
               농구장 위치 저장하기
@@ -251,18 +223,25 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
                 label="농구장 이름"
                 type="text"
                 name="name"
-                onChange={handleChange}
+                onChange={({ target }) =>
+                  setValues((prev) => ({
+                    ...prev,
+                    [target.name]: target.value,
+                  }))
+                }
                 value={values.name}
                 placeholder="ex) 슬램대학교 상경대 앞 농구장"
                 isRequired
                 visibleError={!!errors.name}
               />
-              <ValidationNoticeBar errors={errors.name} />
+              <ErrorMessage size="sm" block>
+                {errors.name}
+              </ErrorMessage>
             </div>
             <div>
               <Label isRequired>위치</Label>
               <PreviewContainer>
-                {savedPosition && !isOpen ? (
+                {values.latitude && values.longitude && !isOpen ? (
                   <div>
                     <AddressGuide>
                       <DecoIcon name="map-pin" color="#FE6D04" size="sm" />
@@ -271,7 +250,7 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
                     <div style={{ position: "relative" }}>
                       <Map.KakaoMap
                         level={level}
-                        center={savedPosition}
+                        center={[values.latitude, values.longitude]}
                         draggable={false}
                         zoomable={false}
                         style={{
@@ -279,7 +258,10 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
                           height: "150px",
                         }}
                       >
-                        <GeneralMarker map={map!} position={savedPosition} />
+                        <GeneralMarker
+                          map={map!}
+                          position={[values.latitude, values.longitude]}
+                        />
                       </Map.KakaoMap>
                       <MoveToMap onClick={() => setOpen(true)} />
                     </div>
@@ -297,37 +279,59 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
                   </PreviewBanner>
                 )}
               </PreviewContainer>
-              <ValidationNoticeBar errors={errors.longitude} />
+              <ErrorMessage size="sm" block>
+                {errors.longitude}
+              </ErrorMessage>
             </div>
             <div>
               <Input
                 label="골대 개수"
                 type="number"
                 name="basketCount"
-                onChange={handleChange}
+                onChange={({ target }) =>
+                  setValues((prev) => ({
+                    ...prev,
+                    [target.name]: target.value,
+                  }))
+                }
                 isRequired
                 value={validatedBasketCount}
                 visibleError={!!errors.basketCount}
               />
-              <ValidationNoticeBar errors={errors.basketCount} />
+              <ErrorMessage size="sm" block>
+                {errors.basketCount}
+              </ErrorMessage>
             </div>
           </Spacer>
         </MainContainer>
-        <BottomFixedButton type="submit" onClick={(e) => handleSubmit(e)}>
+        <BottomFixedButton
+          type="submit"
+          onClick={() => setIsOpenConfirmModal(true)}
+          disabled={!!Object.keys(errors).length}
+        >
           {isLoading ? "Loading..." : "새 농구장 추가 제안하기"}
         </BottomFixedButton>
       </form>
 
       <LeadToLoginModal
         headerContent={
-          <Spacer gap={4} type="vertical">
-            <Text size="md" strong block>
-              새 농구장 추가를 제안하시겠습니까?
-            </Text>
-            <SubText size="xs" block>
-              제출한 코트 정보는 관리자의 승인을 거쳐 반영됩니다.
-            </SubText>
-          </Spacer>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: 100,
+            }}
+          >
+            <Spacer gap={4} type="vertical">
+              <Text size="md" strong block>
+                새 농구장 추가를 제안하시겠습니까?
+              </Text>
+              <SubText size="xs" block>
+                제출한 코트 정보는 관리자의 승인을 거쳐 반영됩니다.
+              </SubText>
+            </Spacer>
+          </div>
         }
         isOpen={isOpenConfirmModal}
         cancel={{
@@ -350,9 +354,9 @@ const CreateCourt: NextPage = UtilRoute("private", () => {
       />
     </div>
   );
-});
+};
 
-export default CreateCourt;
+export default withRouteGuard("private", CreateCourt);
 
 const MainContainer = styled.div`
   padding: ${({ theme }) => `30px ${theme.gaps.base}`};
@@ -421,4 +425,11 @@ const MoveToMap = styled.a`
 
 const SubText = styled(Text)`
   color: ${({ theme }) => theme.colors.gray500};
+`;
+
+const ErrorMessage = styled(Text)`
+  text-align: right;
+  flex-grow: 1;
+  margin: 4px 0;
+  color: ${({ theme }) => theme.colors.red.strong};
 `;

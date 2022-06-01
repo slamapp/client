@@ -1,8 +1,9 @@
-import React, { ReactNode, useRef } from "react";
+import type { ReactNode } from "react";
+import React, { useRef } from "react";
 import styled from "@emotion/styled";
-import { BottomNavigation, TopNavigation } from "@components/domain";
-import { useNavigationContext } from "@contexts/hooks";
 import { css } from "@emotion/react";
+import { BottomNavigation, TopNavigation } from "~/components/domain";
+import { useNavigationContext } from "~/contexts/hooks";
 import Container from "./Container";
 
 interface Props {
@@ -39,7 +40,7 @@ const ToastPortal = styled.div<{
     position: fixed;
     left: ${(containerRect?.left || 0) + 16}px;
     width: ${(containerRect?.width || 0) - 32}px;
-    bottom: ${isBottomNavigation ? 72 : 0}px;
+    bottom: ${isBottomNavigation ? 72 : 16}px;
   `}
 `;
 

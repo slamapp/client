@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from "react";
-
-import { IconToggle } from "@components/base";
-import { useAuthContext } from "@contexts/hooks";
+import { useCallback } from "react";
+import { IconToggle } from "~/components/base";
+import { useAuthContext } from "~/contexts/hooks";
+import type { APICourt } from "~/domainTypes/tobe";
 
 interface Props {
-  courtId: number;
+  courtId: APICourt["id"];
 }
 
 const FavoritesToggle: React.FC<Props> = ({ courtId }) => {

@@ -1,4 +1,4 @@
-import { ReactNode, HTMLAttributes } from "react";
+import type { ReactNode, HTMLAttributes } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import Text from "../Text";

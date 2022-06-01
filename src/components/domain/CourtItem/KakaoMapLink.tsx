@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton } from "@components/base";
+import { IconButton } from "~/components/base";
 
 type KakaoMapButtonType = "information" | "findRoad";
 interface Props {
