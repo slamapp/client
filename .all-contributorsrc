@@ -1,0 +1,105 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "manudeli",
+      "name": "Jonghyeon Ko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61593290?v=4",
+      "profile": "http://bit.ly/jonghyeon",
+      "contributions": [
+        "bug",
+        "code",
+        "design",
+        "ideas",
+        "maintenance",
+        "review",
+        "video",
+        "infra",
+        "doc"
+      ]
+    },
+    {
+      "login": "grighth12",
+      "name": "grighth12",
+      "avatar_url": "https://avatars.githubusercontent.com/u/68159627?v=4",
+      "profile": "https://github.com/grighth12",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review",
+        "test"
+      ]
+    },
+    {
+      "login": "limkhl",
+      "name": "limkhl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/84858773?v=4",
+      "profile": "https://github.com/limkhl",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review"
+      ]
+    },
+    {
+      "login": "Parkserim",
+      "name": "Parkserim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33405125?v=4",
+      "profile": "https://github.com/Parkserim",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "ideas",
+        "review"
+      ]
+    },
+    {
+      "login": "locodingve",
+      "name": "yun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88185304?v=4",
+      "profile": "https://github.com/locodingve",
+      "contributions": [
+        "code",
+        "maintenance",
+        "infra"
+      ]
+    },
+    {
+      "login": "KwonYeKyeong",
+      "name": "KwonYeKyeong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65434196?v=4",
+      "profile": "https://github.com/KwonYeKyeong",
+      "contributions": [
+        "code",
+        "maintenance",
+        "infra"
+      ]
+    },
+    {
+      "login": "sds1vrk",
+      "name": "SEO DONGSUNG",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51287886?v=4",
+      "profile": "https://velog.io/@sds1vrk",
+      "contributions": [
+        "code",
+        "infra"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "client",
+  "projectOwner": "slamapp",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

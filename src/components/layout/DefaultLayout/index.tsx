@@ -1,16 +1,12 @@
-import type { ReactNode } from "react";
 import React, { useRef } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { BottomNavigation, TopNavigation } from "~/components/domain";
 import { useNavigationContext } from "~/contexts/hooks";
 import Container from "./Container";
+import { TopPageLoader } from "~/components/base";
 
-interface Props {
-  children: ReactNode;
-}
-
-const DefaultLayout = ({ children }: Props) => {
+const DefaultLayout: React.FC = ({ children }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { navigationProps } = useNavigationContext();
@@ -19,6 +15,7 @@ const DefaultLayout = ({ children }: Props) => {
   return (
     <Container ref={containerRef}>
       {isTopNavigation && <TopNavigation />}
+      <TopPageLoader />
       <StyledMain>{children}</StyledMain>
       <ToastPortal
         id="toast-portal"

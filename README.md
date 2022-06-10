@@ -1,5 +1,10 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/87c0390f-8dbe-4a17-bfc3-966c79692a93/deploy-status)](https://app.netlify.com/sites/slamsapp/deploys)
-[![Node.js CI](https://github.com/slamapp/client/actions/workflows/publish.yml/badge.svg)](https://github.com/slamapp/client/actions/workflows/publish.yml)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+# 📼 슬램 발표 영상 (아래를 클릭하세요)
+[![Slam 슬램 발표](http://img.youtube.com/vi/V5akCEYSyGQ/0.jpg)](https://youtu.be/V5akCEYSyGQ)
 
 <div align="center"><img src="https://user-images.githubusercontent.com/84858773/147056456-b9bf8e99-0b5b-46fe-bd86-01e9cba8e6ca.png" width="250px"></div>
 
@@ -33,23 +38,6 @@
 
 💁‍ [요구사항 명세 보러가기](https://github.com/slamapp/client/wiki/%EC%8A%AC%EB%9E%A8-%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD-%EB%AA%85%EC%84%B8)
 
-<br>
-
-## 🧾 기능 요약
-
-### 사용자
-
-- 지도 뷰에서 가려는 농구장을 찾아 원하는 시간대에 해당 농구장을 방문할 거라고 약속을 하고, 약속한 시간대에 본인 외에 몇 명이 더 예약했는지 이미지로 구분하여 현황을 알 수 있습니다.
-- 사용자는 지도에 자주 가는 농구장 정보가 없다면 직접 새 농구장 정보를 추가할 수 있습니다.
-- 자주 가는 농구장을 즐겨찾기에 등록할 수 있습니다.
-- 슬램에서 만난 다른 유저들의 프로필을 확인할 수 있고, 팔로우해 친목을 다질 수 있습니다.
-- 내 프로필에서 간단한 정보(숙련도, 선호 포지션 등)를 기입하여 자신을 나타낼 수 있습니다.
-
-### 관리자
-
-- 관리자는 사용자가 추가 제안한 새 농구장 목록 중 처리 대기 중인 항목, 처리 완료된 항목별로 편하고 빠르게 조회하고, 승인과 거절을 할 수 있습니다.
-
-<br>
 
 ## 🎯 타겟 유저
 
@@ -60,25 +48,6 @@
 
 그럼 우리 다같이 슬램 하러 가볼까요? 🏃‍♂️
 
-<br>
-
-# 👨‍👩‍👧‍👧 팀원 소개
-
-|                          종현(마누)                           |                           영주(리키)                           |
-| :-----------------------------------------------------------: | :------------------------------------------------------------: |
-| ![Manu](https://avatars.githubusercontent.com/u/61593290?v=4) | ![Ricky](https://avatars.githubusercontent.com/u/15336672?v=4) |
-|            [manudeli](https://github.com/manudeli)            |          [yungjurick](https://github.com/yungjurick)           |
-
-<br>
-
-# 👨‍👩‍👧‍👧 전 팀원
-
-|                           정희(한나)                           |                           세림(앤)                           |                          경희(노체)                           |
-| :------------------------------------------------------------: | :----------------------------------------------------------: | :-----------------------------------------------------------: |
-| ![Hanna](https://avatars.githubusercontent.com/u/68159627?v=4) | ![Ann](https://avatars.githubusercontent.com/u/33405125?v=4) | ![koby](https://avatars.githubusercontent.com/u/84858773?v=4) |
-|           [grighth12](https://github.com/grighth12)            |          [Parkserim](https://github.com/Parkserim)           |              [limkhl](https://github.com/limkhl)              |
-
-<br>
 
 # ✨ 주요 기능 및 페이지 소개
 
@@ -114,21 +83,34 @@
 | <p align="center"><img src="https://user-images.githubusercontent.com/84858773/147078821-289bad97-815b-4657-ab3d-ba6abdec289f.gif" width="300px" /></p> | <p align="center"><img src="https://user-images.githubusercontent.com/84858773/147082497-922b3e48-4180-4b4b-bac4-a913a0853b8d.jpg" width="300px" /></p> |
 | <li>사용자가 추가한 새 농구장 목록 관리</li><li>목록 조회(무한 스크롤)</li><li>새 농구장 승인 및 거절</li>                                              | <li>알림 목록 조회</li> <li>상단 네비게이션 뱃지로 갯수 확인</li>                                                                                       |
 
-<br>
-
-# ⚡ 프로젝트 실행 방법
-
-node v16.13.0
-yarn
-
-```bash
-yarn cache clean
-yarn
-yarn dev
-```
 
 <br>
 
-# 🔗 Server Git Repo
+# 🔗 Server repo
+[Slam Server](https://github.com/slamapp/server)
 
-[Slam Server](https://github.com/prgrms-web-devcourse/slam-server)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://bit.ly/jonghyeon"><img src="https://avatars.githubusercontent.com/u/61593290?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jonghyeon Ko</b></sub></a><br /><a href="https://github.com/slamapp/client/issues?q=author%3Amanudeli" title="Bug reports">🐛</a> <a href="https://github.com/slamapp/client/commits?author=manudeli" title="Code">💻</a> <a href="#design-manudeli" title="Design">🎨</a> <a href="#ideas-manudeli" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-manudeli" title="Maintenance">🚧</a> <a href="https://github.com/slamapp/client/pulls?q=is%3Apr+reviewed-by%3Amanudeli" title="Reviewed Pull Requests">👀</a> <a href="#video-manudeli" title="Videos">📹</a> <a href="#infra-manudeli" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/slamapp/client/commits?author=manudeli" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/grighth12"><img src="https://avatars.githubusercontent.com/u/68159627?v=4?s=100" width="100px;" alt=""/><br /><sub><b>grighth12</b></sub></a><br /><a href="https://github.com/slamapp/client/issues?q=author%3Agrighth12" title="Bug reports">🐛</a> <a href="https://github.com/slamapp/client/commits?author=grighth12" title="Code">💻</a> <a href="https://github.com/slamapp/client/commits?author=grighth12" title="Documentation">📖</a> <a href="#design-grighth12" title="Design">🎨</a> <a href="#ideas-grighth12" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/slamapp/client/pulls?q=is%3Apr+reviewed-by%3Agrighth12" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/slamapp/client/commits?author=grighth12" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/limkhl"><img src="https://avatars.githubusercontent.com/u/84858773?v=4?s=100" width="100px;" alt=""/><br /><sub><b>limkhl</b></sub></a><br /><a href="https://github.com/slamapp/client/commits?author=limkhl" title="Code">💻</a> <a href="https://github.com/slamapp/client/commits?author=limkhl" title="Documentation">📖</a> <a href="#design-limkhl" title="Design">🎨</a> <a href="#ideas-limkhl" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/slamapp/client/pulls?q=is%3Apr+reviewed-by%3Alimkhl" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/Parkserim"><img src="https://avatars.githubusercontent.com/u/33405125?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Parkserim</b></sub></a><br /><a href="https://github.com/slamapp/client/commits?author=Parkserim" title="Code">💻</a> <a href="https://github.com/slamapp/client/commits?author=Parkserim" title="Documentation">📖</a> <a href="#design-Parkserim" title="Design">🎨</a> <a href="#ideas-Parkserim" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/slamapp/client/pulls?q=is%3Apr+reviewed-by%3AParkserim" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/locodingve"><img src="https://avatars.githubusercontent.com/u/88185304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>yun</b></sub></a><br /><a href="https://github.com/slamapp/client/commits?author=locodingve" title="Code">💻</a> <a href="#maintenance-locodingve" title="Maintenance">🚧</a> <a href="#infra-locodingve" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/KwonYeKyeong"><img src="https://avatars.githubusercontent.com/u/65434196?v=4?s=100" width="100px;" alt=""/><br /><sub><b>KwonYeKyeong</b></sub></a><br /><a href="https://github.com/slamapp/client/commits?author=KwonYeKyeong" title="Code">💻</a> <a href="#maintenance-KwonYeKyeong" title="Maintenance">🚧</a> <a href="#infra-KwonYeKyeong" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://velog.io/@sds1vrk"><img src="https://avatars.githubusercontent.com/u/51287886?v=4?s=100" width="100px;" alt=""/><br /><sub><b>SEO DONGSUNG</b></sub></a><br /><a href="https://github.com/slamapp/client/commits?author=sds1vrk" title="Code">💻</a> <a href="#infra-sds1vrk" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

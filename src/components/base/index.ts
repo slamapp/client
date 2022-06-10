@@ -22,6 +22,7 @@ export { default as LinkStrong } from "./LinkStrong";
 export { default as Label } from "./Label";
 export { default as Chip } from "./Chip";
 export { default as Toast } from "./Toast";
+export { default as TopPageLoader } from "./TopPageLoader";
 /* eslint-disable import/no-cycle */
 export { default as IconButton } from "./IconButton";
 export { default as Input } from "./Input";
